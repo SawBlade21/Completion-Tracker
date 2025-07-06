@@ -1,0 +1,80 @@
+{
+	"geode": "4.6.2",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "sawblade.rebeat_tracker",
+	"name": "Rebeat Tracker",
+	"version": "v1.0.0",
+	"developer": "Sawblade",
+	"description": "This is where she counts a rebeat.",
+	"dependencies": {
+		"cvolton.level-id-api": {
+			"version": ">=v1.2.2",
+			"importance": "required"
+		}
+	},
+	"resources": {
+        "sprites": [
+            "resources/jumps.png",
+			"resources/attempts.png",
+			"resources/rebeat_btn_01.png",
+			"resources/rebeat_btn_02.png",
+			"resources/rebeat_btn_01b.png",
+			"resources/rebeat_btn_02b.png",
+			"resources/blank_rebeat_btn.png",
+			"resources/trophy_icon.png",
+			"resources/tracker_arrow_01.png",
+			"resources/tracker_arrow_02.png",
+			"resources/rebeat_btn_02.png",
+			"resources/rebeat_btn_03.png",
+			"resources/paste_icon_btn.png",
+			"resources/auto_btn.png",
+			"resources/garage_btn.png",
+			"resources/GJ_coinsIcon2_gray_001.png"
+        ]
+    },
+	"settings": {
+		"time-format": {
+			"name": "Time Format",
+			"description": "Choose whether to use the 12-hour or 24-hour time format.",
+			"type": "string",
+			"default": "12-hour",
+			"one-of": ["12-hour", "24-hour"]
+		},
+		"calculate-attempts": {
+			"name": "Calculate Attempts",
+			"description": "Calculates and displays the change in attempts between completions rather than the total level attempts. You must reload the popup for changes to take place.",
+			"type": "bool",
+			"default": false
+		},
+		"endscreen-button": {
+			"name": "Endscreen Button",
+			"description": "Adds the completion popup button to the endscreen.",
+			"type": "bool",
+			"default": false
+		},
+		"confirm-completion": {
+			"name": "Confirm Completion",
+			"description": "Upon completing a level, a popup to confirm saving the completion will appear.",
+			"type": "bool",
+			"default": false
+		},
+		"autofill": {
+			"name": "Autofill",
+			"description": "Automatically autofill data from the level when opening the 'Create Completion' menu.",
+			"type": "bool",
+			"default": false
+		},
+		"blue-button": {
+			"name": "Use green button",
+			"description": "Uses a blue version of the completion menu button instead of the default green.",
+			"type": "bool",
+			"default": false
+		}
+	}
+
+}
