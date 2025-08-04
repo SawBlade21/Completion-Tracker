@@ -34,7 +34,6 @@ class $modify(FapGJBaseGameLayer, GJBaseGameLayer) {
 		for (int i = 0; i < objectCount; i++) {
 			auto* obj = sectionObjects->at(i);
 
-			// check if the object is a coin
 			if (obj->m_objectType != GameObjectType::SecretCoin && obj->m_objectType != GameObjectType::UserCoin)
 				continue;
 
@@ -42,20 +41,16 @@ class $modify(FapGJBaseGameLayer, GJBaseGameLayer) {
 			if (!effectSprite) // weird, but just in case
 				continue;
 
-			// check if the coin was already collected
-			// if (effectSprite->getOpacity() == 0)
-			// 	continue;
-
-			// check if the player is colliding with the object
 			auto objectRect = effectSprite->getObjectRect();
 			if (!playerRect.intersectsRect(objectRect))
 				continue;
 
 			for (int i = 0; i < m_fields->m_coinObjects.size(); i++) {
-				if (m_fields->m_coinObjects[i] == obj)
+
+				if (m_fields->m_coinObjects[i] == obj && !obj->m_isGroupDisabled) {
 					m_fields->m_coins[i] = true;
+				}
 			}
-			// gsm->hasUserCoin(m_level->getCoinKey(1))
 			
 		}
 
@@ -75,7 +70,7 @@ class $modify(FapGJBaseGameLayer, GJBaseGameLayer) {
 	return id;
 }*/
 
-class $modify(PlayLayer) {
+class $modify(FapPlayLayer, PlayLayer) {
 	bool levelHasCoins() {
 		auto& coinObjects = static_cast<FapGJBaseGameLayer*>(static_cast<GJBaseGameLayer*>(this))->m_fields->m_coinObjects;
 		return coinObjects.size() > 0;
@@ -169,6 +164,21 @@ class $modify(PlayLayer) {
 		if (m_isPracticeMode || m_isTestMode)
 			return PlayLayer::levelComplete();
 			
+		/*if (Mod::get()->getSettingValue<bool>("confirm-completion")) {
+			geode::createQuickPopup(
+				"Confirm Completion",
+				"Do you want to <cj>save</c> this completion?",
+				"Cancel", "Save",
+				[this](auto, bool btn2) {
+            		if (btn2)  {
+						createCompletion();
+					}
+				}
+			);
+		}
+		else
+			createCompletion();*/
+
 		std::string id = std::to_string(EditorIDs::getID(m_level, true));
 		if (m_level->m_isEditable) 
 			id = "c" + id;
@@ -279,8 +289,6 @@ class $modify(PlayLayer) {
 		
 		// rebeats.push(timestamp + iconData);
 		// log::debug("push: {}", timestamp + iconData);
-
-
 
 		PlayLayer::levelComplete();
 	}

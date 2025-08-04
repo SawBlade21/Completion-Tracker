@@ -72,6 +72,37 @@ std::string Utils::getTime(std::string time) {
     }
 }
 
+std::string Utils::convertTime(std::string time) {
+    std::string newTime;
+    std::tm tm = {};
+    std::istringstream ss(time);
+    ss >> std::get_time(&tm, "%I:%M:%S %p");
+    if (ss.fail()) {
+        log::debug("fail 1");
+        return time;
+    }
+    else {
+        std::ostringstream out;
+        out << std::put_time(&tm, "%H:%M:%S");
+        return out.str();
+    }
+}
+
+std::optional<std::chrono::system_clock::time_point> Utils::convertDate(std::string date) {
+    std::istringstream ss(date);
+    std::chrono::system_clock::time_point tp;
+
+    // Parse the string using a format specifier
+    ss >> std::chrono::parse("%Y-%m-%d %H:%M:%S", tp);
+
+    if (ss.fail()) {
+        log::debug("fail 2");
+        return std::nullopt;
+    }
+    else
+        return tp;
+}
+
 std::string Utils::isAMorPM(std::string time) {
     log::debug("a");
     if (time.find("AM") != std::string::npos)

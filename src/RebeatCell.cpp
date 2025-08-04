@@ -5,7 +5,35 @@
 
 using namespace geode::prelude;
 
+std::string formatStat(std::string stat) {
+    std::string formattedStat = "";
+
+    for (int i = 1; i <= stat.length(); i++) {
+        formattedStat= stat[stat.length() - i] + formattedStat;
+        if (i % 3 == 0 && i != stat.length())
+            formattedStat = "," + formattedStat;
+    }
+
+    return formattedStat;
+}
+
 bool RebeatCell::init() {
+
+    // auto bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    // bg->setColor(ccc3(138, 77, 46));
+    // // bg->setPosition(spr->getContentSize() / 2 - ccp(0, 3.5f));
+    // bg->setContentSize({40, 380});
+    // addChild(bg);
+
+    CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+	bg->setColor({0, 0, 0});
+    bg->setOpacity(25);
+    bg->setPosition({5, 0});
+    bg->setAnchorPoint({0, 0});
+    bg->setContentSize({370, 40});
+    // bg->setScale(0.25f);
+
+	addChild(bg);
 
     m_rebeatIndex = m_popup->m_rebeats;
     log::debug("indexs: {}, {}", m_popup->m_rebeats, m_rebeatIndex);
@@ -14,6 +42,10 @@ bool RebeatCell::init() {
     std::string dateText = "";
     GameManager* gm = GameManager::get();
     bool hasCoins = false;
+
+    auto menu = CCMenu::create();
+    menu->setPosition(this->getPositionX(), this->getPositionY());
+    this->addChild(menu);
 
     if (m_rebeat.contains("date")) {
         m_date = m_rebeat["date"].asString().unwrapOr("");
@@ -26,13 +58,13 @@ bool RebeatCell::init() {
 
         dateText += m_date;
         
-        /*auto dateLabel = CCLabelBMFont::create(m_date.c_str(), "chatFont.fnt");
-        dateLabel->setPosition(42.5f, 12.f);
-        dateLabel->setAnchorPoint({0, 0.5});
-        dateLabel->setScale(0.6f);
-        dateLabel->setOpacity(170);
+        /*auto m_dateLabel = CCLabelBMFont::create(m_date.c_str(), "chatFont.fnt");
+        m_dateLabel->setPosition(42.5f, 12.f);
+        m_dateLabel->setAnchorPoint({0, 0.5});
+        m_dateLabel->setScale(0.6f);
+        m_dateLabel->setOpacity(170);
 
-        this->addChild(dateLabel);*/
+        this->addChild(m_dateLabel);*/
     }
 
     if (m_rebeat.contains("time")) {
@@ -45,15 +77,31 @@ bool RebeatCell::init() {
     log::debug("(rbcell) date: {}, time: {}", m_date, m_time);
     log::debug("dateText: {}", dateText);
     if (dateText != "") {
-        auto dateLabel = CCLabelBMFont::create(dateText.c_str(), "chatFont.fnt");
-        dateLabel->setPosition(42.5f, 12.f);
-        dateLabel->setAnchorPoint({0, 0.5});
-        dateLabel->setScale(0.6f);
-        dateLabel->setOpacity(170);
+        m_dateLabel = CCLabelBMFont::create(dateText.c_str(), "chatFont.fnt");
+        m_dateLabel->setPosition(42.5f, 12.f);
+        m_dateLabel->setAnchorPoint({0, 0.5});
+        m_dateLabel->setScale(0.6f);
+        m_dateLabel->setOpacity(170);
 
-        this->addChild(dateLabel);
+        this->addChild(m_dateLabel);
     }
 
+    if (m_rebeat.contains("link")) {
+        m_ytLink = m_rebeat["link"].asString().unwrapOr("");
+
+        auto ytSprite = CCSprite::createWithSpriteFrameName("gj_ytIcon_001.png");
+        ytSprite->setScale(0.5f);
+        
+        auto ytBtn = CCMenuItemSpriteExtra::create(ytSprite, this, menu_selector(RebeatCell::onVideo));
+        menu->addChild(ytBtn);
+
+        if (m_dateLabel) {
+            float labelEdge = m_dateLabel->getPosition().x + m_dateLabel->getContentSize().width * m_dateLabel->getScale();
+            ytBtn->setPosition({labelEdge + 10.f, 12.f});
+        } else {
+            ytBtn->setPosition(42.5f + (ytSprite->getContentWidth() / 2), 12.f);
+        }
+    }
 
     if (m_rebeat.contains("icons")) {
         auto iconData = m_rebeat["icons"];
@@ -68,7 +116,16 @@ bool RebeatCell::init() {
         icon->updatePlayerFrame(m_iconFrame, m_iconType);
         icon->setPosition({10.f, 20.f});
         icon->setScale(0.75f);
-        icon->getChildByType<CCSprite*>(0)->setAnchorPoint({0, 0.5});
+
+        if (m_iconType == IconType::Robot) {
+            icon->m_robotSprite->setAnchorPoint({0, 0.5});
+        }
+        else if (m_iconType == IconType::Spider) {
+            icon->m_spiderSprite->setAnchorPoint({0, 0.5});
+        } 
+        else {
+            icon->getChildByType<CCSprite*>(0)->setAnchorPoint({0, 0.5});
+        }
 
         icon->setColor(gm->colorForIdx(m_iconColor));
         icon->setSecondColor(gm->colorForIdx(m_iconColor2));
@@ -81,7 +138,16 @@ bool RebeatCell::init() {
 
         icon->updateColors();
         this->addChild(icon);
-        }
+    }
+
+    if (m_rebeat.contains("watermark")) {
+        m_watermark = m_rebeat["watermark"].asString().unwrapOr("");
+        auto watermarkLabel = CCLabelBMFont::create(m_watermark.c_str(), "chatFont.fnt");
+        watermarkLabel->setScale(0.3f);
+        watermarkLabel->setOpacity(64.f);
+        watermarkLabel->setPosition({21.f, 4.f});
+        addChild(watermarkLabel);
+    }
 
     if (m_rebeat.contains("coins")) {
         auto coinData = m_rebeat["coins"];
@@ -166,7 +232,8 @@ bool RebeatCell::init() {
 
     if (m_rebeat.contains("points")) {
         m_points = m_rebeat["points"].asString().unwrapOr("NA");
-        auto pointsLabel = CCLabelBMFont::create(m_points.c_str(), "bigFont.fnt");
+
+        auto pointsLabel = CCLabelBMFont::create(formatStat(m_points).c_str(), "bigFont.fnt");
         pointsLabel->setAnchorPoint({0, 0.5});
         pointsLabel->setPosition(216.f + offset + 40.f, 12.5);
         pointsLabel->setScale(0.4f);
@@ -183,22 +250,34 @@ bool RebeatCell::init() {
     if (m_rebeat.contains("attempts")) {
         m_attempts = m_rebeat["attempts"].asString().unwrapOr("NA");
 
-        if (m_popup->m_calculateAttempts) {
-            auto newAttempts = std::to_string(std::stoi(m_attempts) - m_popup->m_prevAttempts);
-            m_popup->m_prevAttempts = std::stoi(m_attempts);
-            m_attempts = newAttempts;
-        }
+        // if (m_popup->m_calculateAttempts) {
+        //     auto newAttempts = std::to_string(std::stoi(m_attempts) - m_popup->m_prevAttempts);
+        //     m_popup->m_prevAttempts = std::stoi(m_attempts);
+        //     m_attempts = newAttempts;
+        // }
 
-        auto attemptsLabel = CCLabelBMFont::create(m_attempts.c_str(), "bigFont.fnt");
+        // std::string formattedAttempts = "";
+        // for (int i = 1; i <= m_attempts.length(); i++) {
+        //     formattedAttempts = m_attempts[m_attempts.length() - i] + formattedAttempts;
+        //     if (i % 3 == 0 && i != m_attempts.length())
+        //         formattedAttempts = "," + formattedAttempts;
+        // }
+        // 50000 50,000
+
+        auto attemptsLabel = CCLabelBMFont::create(formatStat(m_attempts).c_str(), "bigFont.fnt");
         attemptsLabel->setAnchorPoint({0, 0.5});
         attemptsLabel->setPosition(216 + offset + 40.f, 30.5);
         attemptsLabel->setScale(0.4f);
         attemptsLabel->limitLabelWidth(42.f - offset, 0.4f, 0.001f); //90
 
-        if (m_popup->m_calculateAttempts)
-            attemptsLabel->setColor(ccc3(0, 255, 0));
+        // if (m_popup->m_calculateAttempts)
+        //     attemptsLabel->setColor(ccc3(0, 255, 0));
 
-        auto attemptsSprite = CCSprite::create("attempts.png"_spr);
+        // auto attemptsSprite = CCSprite::create("attempts.png"_spr);
+        // attemptsSprite->setPosition({208 + offset + 40.f, 29});
+        // attemptsSprite->setScale(0.53f);
+
+        auto attemptsSprite = CCSprite::createWithSpriteFrameName("miniSkull_001.png");
         attemptsSprite->setPosition({208 + offset + 40.f, 29});
         attemptsSprite->setScale(0.53f);
 
@@ -208,7 +287,15 @@ bool RebeatCell::init() {
 
     if (m_rebeat.contains("jumps")) {
         m_jumps = m_rebeat["jumps"].asString().unwrapOr("NA");
-        auto jumpsLabel = CCLabelBMFont::create(m_jumps.c_str(), "bigFont.fnt");
+
+        // std::string formattedJumps = "";
+        // for (int i = 1; i <= m_jumps.length(); i++) {
+        //     formattedJumps = m_jumps[m_jumps.length() - i] + formattedJumps;
+        //     if (i % 3 == 0 && i != m_jumps.length())
+        //         formattedJumps = "," + formattedJumps;
+        // }
+
+        auto jumpsLabel = CCLabelBMFont::create(formatStat(m_jumps).c_str(), "bigFont.fnt");
         jumpsLabel->setAnchorPoint({0, 0.5});
         jumpsLabel->setPosition(216 + offset + 40.f, 12.5f);
         jumpsLabel->setScale(0.4f);
@@ -240,10 +327,6 @@ bool RebeatCell::init() {
     rebeatLabel->limitLabelWidth(96.f + 40.f, 0.55f, 0.001f);
 
     this->addChild(rebeatLabel);
-
-    auto menu = CCMenu::create();
-    menu->setPosition(this->getPositionX(), this->getPositionY());
-    this->addChild(menu);
 
     auto trashSprite = CCSprite::createWithSpriteFrameName("GJ_trashBtn_001.png");
     trashSprite->setScale(0.71f);
@@ -285,7 +368,7 @@ void RebeatCell::onDelete(CCObject* obj) {
         "Cancel", "Delete",
         [this](auto, bool btn2) {
             if (btn2)  {
-                return m_popup->deleteCell(m_popup->m_cells->indexOfObject(this));
+                return m_popup->deleteCell(m_popup->m_cells->indexOfObject(this), m_rebeatIndex);
             }
         }
     );
@@ -295,4 +378,8 @@ void RebeatCell::onEdit(CCObject* obj) {
     auto popup = EditPopup::create(m_popup, this);
     popup->show();
     return;
+}
+
+void RebeatCell::onVideo(CCObject* obj) {
+    geode::utils::web::openLinkInBrowser(m_ytLink);
 }

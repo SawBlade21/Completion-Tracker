@@ -6,11 +6,11 @@
 		"mac": "2.2074",
 		"ios": "2.2074"
 	},
-	"id": "sawblade.rebeat_tracker",
-	"name": "Rebeat Tracker",
+	"id": "sawblade.completion_tracker",
+	"name": "Completion Tracker",
 	"version": "v1.0.0",
 	"developer": "Sawblade",
-	"description": "This is where she counts a rebeat.",
+	"description": "Tracks all your level completions",
 	"dependencies": {
 		"cvolton.level-id-api": {
 			"version": ">=v1.2.2",
@@ -34,32 +34,21 @@
 			"resources/paste_icon_btn.png",
 			"resources/auto_btn.png",
 			"resources/garage_btn.png",
-			"resources/GJ_coinsIcon2_gray_001.png"
+			"resources/GJ_coinsIcon2_gray_001.png",
+			"resources/sort_btn.png"
         ]
     },
 	"settings": {
 		"time-format": {
 			"name": "Time Format",
-			"description": "Choose whether to use the 12-hour or 24-hour time format.",
+			"description": "Whether to use the 12-hour or 24-hour time format. Times will be automatically converted.",
 			"type": "string",
 			"default": "12-hour",
 			"one-of": ["12-hour", "24-hour"]
 		},
-		"calculate-attempts": {
-			"name": "Calculate Attempts",
-			"description": "Calculates and displays the change in attempts between completions rather than the total level attempts. You must reload the popup for changes to take place.",
-			"type": "bool",
-			"default": false
-		},
 		"endscreen-button": {
 			"name": "Endscreen Button",
 			"description": "Adds the completion popup button to the endscreen.",
-			"type": "bool",
-			"default": false
-		},
-		"confirm-completion": {
-			"name": "Confirm Completion",
-			"description": "Upon completing a level, a popup to confirm saving the completion will appear.",
 			"type": "bool",
 			"default": false
 		},
@@ -70,11 +59,10 @@
 			"default": false
 		},
 		"blue-button": {
-			"name": "Use green button",
+			"name": "Use Blue Button",
 			"description": "Uses a blue version of the completion menu button instead of the default green.",
 			"type": "bool",
 			"default": false
 		}
 	}
-
 }

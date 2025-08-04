@@ -12,10 +12,13 @@ class EditPopup : public geode::Popup<> {
 
         bool setup() override;
 
+        void onClose(CCObject* obj) override;
+
     private:
 
         bool m_isPlatformer;
         bool m_isAutocomplete;
+        bool m_isEdited = false;
         TextInput* m_nameInput;
 
         TextInput* m_timeInput;
@@ -58,6 +61,8 @@ class EditPopup : public geode::Popup<> {
         void onSave(CCObject* obj);
         
         void onDelete(CCObject* obj);
+
+        void onCancel(CCObject* obj);
         
         void onReset(CCObject* obj);
         
@@ -131,7 +136,11 @@ class EditPopup : public geode::Popup<> {
 
         void onTimeArrow(CCObject* obj);
 
-        matjson::Value dataToJson(std::string name, std::string date, std::string time, int iconType, int frame, int color1, int color2, int glowColor, bool hasGlow, int coinAmount, bool coinsCollected[3], std::string stat1, std::string stat2, bool isPlatformer);
+        matjson::Value dataToJson(std::string name, std::string date, std::string time, int iconType, int frame, int color1, int color2, int glowColor, bool hasGlow, int coinAmount, bool coinsCollected[3], std::string stat1, std::string stat2, bool isPlatformer, std::string ytLink);
+
+        void onYoutube(CCObject* obj);
+
+        void setYoutubeLink(std::string link);
         
         
     public:
@@ -145,6 +154,8 @@ class EditPopup : public geode::Popup<> {
         RebeatPopup* m_popup;
         RebeatCell* m_cell;
         bool m_isCreate;
+
+        std::string m_ytLink = "";
         
         static EditPopup* create(RebeatPopup* popup);
         

@@ -170,7 +170,7 @@ void IconSelectLayer::onPageRight(CCObject* obj) {
 CCMenu* IconSelectLayer::createPage() {
     auto page = CCMenu::create();
     page->setAnchorPoint({0.f, 1.f});
-    page->setPosition({15, 220});
+    page->setPosition({24, 220});
     
     page->setLayout(RowLayout::create()
         ->setGap(8.f)

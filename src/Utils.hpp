@@ -37,5 +37,8 @@ class Utils {
         static std::string getTime(std::string time);
 
         static std::string isAMorPM(std::string time);
+
+        static std::string convertTime(std::string time);
+        static std::optional<std::chrono::system_clock::time_point> convertDate(std::string date);
         
 };

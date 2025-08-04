@@ -8,14 +8,17 @@ class RebeatCell : public cocos2d::CCNode {
 
 private:
 
+    CCLabelBMFont* m_dateLabel;
 
-bool init();
+    bool init();
 
-void onDelete(CCObject* obj);
+    void onDelete(CCObject* obj);
 
-void onEdit(CCObject* obj);
+    void onEdit(CCObject* obj);
 
-void setupCell();
+    void onVideo(CCObject* obj);
+
+    void setupCell();
 
 public:
 
@@ -40,6 +43,8 @@ public:
     std::string m_jumps = "";
     std::string m_levelTime = "";
     std::string m_points = "";
+    std::string m_ytLink = "";
+    std::string m_watermark = "";
 
     static RebeatCell* create(const matjson::Value &rebeat, RebeatPopup* popup);
 
