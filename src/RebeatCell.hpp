@@ -32,9 +32,9 @@ public:
     matjson::Value m_iconData;
     IconType m_iconType;
     int m_iconFrame;
-    int m_iconColor;
-    int m_iconColor2;
-    int m_glowColor;
+    int m_iconColor = 12;
+    int m_iconColor2 = 12;
+    int m_glowColor = 12;
     bool m_hasGlow = false;
     matjson::Value m_coinData;
     int m_coinAmount;

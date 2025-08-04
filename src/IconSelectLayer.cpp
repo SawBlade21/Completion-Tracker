@@ -8,6 +8,11 @@ bool IconSelectLayer::setup() {
     gm = GameManager::get();
     m_iconCount = gm->countForType(m_gamemode);
     log::debug("iconCount: {}", m_iconCount);
+    log::debug("iconType: {}", static_cast<int>(m_gamemode));
+
+    if (m_iconCount <= 0)
+        return true;
+
     m_pageCount = static_cast<int>(std::ceil(static_cast<float>(m_iconCount) / static_cast<float>(m_pageSize)));
 
     m_navButtonMenu = CCMenu::create();

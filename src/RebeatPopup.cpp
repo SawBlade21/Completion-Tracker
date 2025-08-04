@@ -11,7 +11,7 @@ using namespace geode::prelude;
 void RebeatPopup::makeList(bool refresh) {
     if (!refresh) {
         m_cells = CCArray::create();
-        //log::debug("{}", rebeats.dump());
+        log::debug("{}", m_rebeatsList.dump());
     
         m_rebeats = 0;
         m_prevAttempts = 0;
@@ -44,6 +44,8 @@ void RebeatPopup::makeList(bool refresh) {
     }
     // m_sortType = 6;
     sortCells();
+
+    log::debug("cells: {}", m_cells);
 
     m_listView = ListView::create(m_cells, 44, 380, 220);
     CCNode* contentLayer = static_cast<CCNode*>(m_listView->m_tableView->getChildren()->objectAtIndex(0));

@@ -31,14 +31,12 @@ bool RebeatCell::init() {
     bg->setPosition({5, 0});
     bg->setAnchorPoint({0, 0});
     bg->setContentSize({370, 40});
-    // bg->setScale(0.25f);
-
 	addChild(bg);
 
     m_rebeatIndex = m_popup->m_rebeats;
     log::debug("indexs: {}, {}", m_popup->m_rebeats, m_rebeatIndex);
-    m_date = "NA";
-    m_time = "NA";
+    m_date = "";
+    m_time = "";
     std::string dateText = "";
     GameManager* gm = GameManager::get();
     bool hasCoins = false;
@@ -105,7 +103,12 @@ bool RebeatCell::init() {
 
     if (m_rebeat.contains("icons")) {
         auto iconData = m_rebeat["icons"];
-        m_iconType =  static_cast<IconType>(iconData["type"].asInt().unwrapOr(0));
+        auto iconTypeInt = iconData["type"].asInt().unwrapOr(0);
+
+        if (iconTypeInt < 0 || iconTypeInt > 8)
+            iconTypeInt = 0;
+
+        m_iconType =  static_cast<IconType>(iconTypeInt);
         m_iconFrame = iconData["frame"].asInt().unwrapOr(0);
         m_iconColor = iconData["color_1"].asInt().unwrapOr(12);
         m_iconColor2 = iconData["color_2"].asInt().unwrapOr(12);
@@ -122,9 +125,14 @@ bool RebeatCell::init() {
         }
         else if (m_iconType == IconType::Spider) {
             icon->m_spiderSprite->setAnchorPoint({0, 0.5});
+            icon->setPosition({13.f, 20.f});
         } 
         else {
-            icon->getChildByType<CCSprite*>(0)->setAnchorPoint({0, 0.5});
+            auto iconSprite = icon->getChildByType<CCSprite*>(0);
+            iconSprite->setAnchorPoint({0, 0.5});
+            if (m_iconType == IconType::Ufo && iconSprite->getContentWidth() > 40) {
+                iconSprite->setScale(0.75f);
+            }
         }
 
         icon->setColor(gm->colorForIdx(m_iconColor));
@@ -145,7 +153,7 @@ bool RebeatCell::init() {
         auto watermarkLabel = CCLabelBMFont::create(m_watermark.c_str(), "chatFont.fnt");
         watermarkLabel->setScale(0.3f);
         watermarkLabel->setOpacity(64.f);
-        watermarkLabel->setPosition({21.f, 4.f});
+        watermarkLabel->setPosition({23.f, 4.f});
         addChild(watermarkLabel);
     }
 
@@ -153,9 +161,12 @@ bool RebeatCell::init() {
         auto coinData = m_rebeat["coins"];
         m_coinAmount = coinData["amount"].asInt().unwrapOr(0);
 
+        if (m_coinAmount > 3)
+            m_coinAmount = 3;
+
         hasCoins = (m_coinAmount > 0);
 
-        if (hasCoins) {
+        if (hasCoins && m_coinAmount <= 3) {
             std::vector<float> xPositions; //(coinAmount == 3) ? {156, 170, 174} : (coinAmount == 2) ? {163, 177} : {170};
 
             switch (m_coinAmount) {
@@ -215,7 +226,7 @@ bool RebeatCell::init() {
     float offset = (hasCoins) ? 0 : -55;
     
     if (m_rebeat.contains("level_time")) {
-        m_levelTime = m_rebeat["level_time"].asString().unwrapOr("NA");
+        m_levelTime = m_rebeat["level_time"].asString().unwrapOr("");
         auto timeLabel = CCLabelBMFont::create(m_levelTime.c_str(), "bigFont.fnt");
         timeLabel->setAnchorPoint({0, 0.5});
         timeLabel->setPosition(216.f + offset + 40.f, 30.5f);
@@ -231,7 +242,7 @@ bool RebeatCell::init() {
     }
 
     if (m_rebeat.contains("points")) {
-        m_points = m_rebeat["points"].asString().unwrapOr("NA");
+        m_points = m_rebeat["points"].asString().unwrapOr("");
 
         auto pointsLabel = CCLabelBMFont::create(formatStat(m_points).c_str(), "bigFont.fnt");
         pointsLabel->setAnchorPoint({0, 0.5});
@@ -248,7 +259,7 @@ bool RebeatCell::init() {
     }
 
     if (m_rebeat.contains("attempts")) {
-        m_attempts = m_rebeat["attempts"].asString().unwrapOr("NA");
+        m_attempts = m_rebeat["attempts"].asString().unwrapOr("");
 
         // if (m_popup->m_calculateAttempts) {
         //     auto newAttempts = std::to_string(std::stoi(m_attempts) - m_popup->m_prevAttempts);
@@ -286,7 +297,7 @@ bool RebeatCell::init() {
     }
 
     if (m_rebeat.contains("jumps")) {
-        m_jumps = m_rebeat["jumps"].asString().unwrapOr("NA");
+        m_jumps = m_rebeat["jumps"].asString().unwrapOr("");
 
         // std::string formattedJumps = "";
         // for (int i = 1; i <= m_jumps.length(); i++) {
@@ -312,7 +323,7 @@ bool RebeatCell::init() {
     //std::string rebeatText;
 
     if (m_rebeat.contains("name")) {
-        m_name = m_rebeat["name"].asString().unwrapOr("NA");
+        m_name = m_rebeat["name"].asString().unwrapOr("Unnamed Completion");
         //rebeatText = m_name;
     }
     else 

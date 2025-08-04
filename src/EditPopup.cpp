@@ -431,6 +431,9 @@ bool EditPopup::setup() {
     else
         m_coinAmount = m_cell->m_coinAmount;
 
+    if (m_coinAmount > 3)
+        m_coinAmount = 3;
+
     if (m_coinAmount > 0) {
         auto resetCoinsSprite = CCSprite::createWithSpriteFrameName("GJ_undoBtn_001.png");
         resetCoinsSprite->setScale(0.45f);
@@ -486,8 +489,10 @@ bool EditPopup::setup() {
         m_coin1Toggle->setPosition({xPositions[0], 190});
         m_coin1Toggle->setTag(0);
     
-        if (!m_isCreate)
-            m_coin1Toggle->toggle(m_cell->m_coinsCollected[0]);
+        if (!m_isCreate) {
+            m_coinsCollected[0] = m_cell->m_coinsCollected[0];
+            m_coin1Toggle->toggle(m_coinsCollected[0]);
+        }
     
         popupMenu->addChild(m_coin1Toggle);
     
@@ -508,8 +513,10 @@ bool EditPopup::setup() {
             m_coin2Toggle->setPosition({xPositions[1], 190});
             m_coin2Toggle->setTag(1);
             
-            if (!m_isCreate)
-                m_coin2Toggle->toggle(m_cell->m_coinsCollected[1]);
+            if (!m_isCreate) {
+                m_coinsCollected[1] = m_cell->m_coinsCollected[1];
+                m_coin2Toggle->toggle(m_coinsCollected[1]);
+            }
         
             popupMenu->addChild(m_coin2Toggle);
 
@@ -530,8 +537,10 @@ bool EditPopup::setup() {
                 m_coin3Toggle->setPosition({xPositions[2], 190});
                 m_coin3Toggle->setTag(2);
                 
-                if (!m_isCreate)
-                    m_coin3Toggle->toggle(m_cell->m_coinsCollected[2]);
+                if (!m_isCreate) {
+                    m_coinsCollected[2] = m_cell->m_coinsCollected[2];
+                    m_coin3Toggle->toggle(m_coinsCollected[2]);
+                }
             
                 popupMenu->addChild(m_coin3Toggle);
             }
@@ -1090,16 +1099,19 @@ void EditPopup::onAutoDate(CCObject* obj) {
 }
 
 void EditPopup::onAutoTime(CCObject* obj) {
-    auto now = floor<seconds>(system_clock::now());
+    
+    // auto now = floor<seconds>(system_clock::now());
+    std::time_t now_time_t = system_clock::to_time_t(system_clock::now());
+    auto local_tm = std::localtime(&now_time_t);
     std::vector<std::string> timestamp;
     if (m_timeSettingText) {
-        timestamp = Utils::splitString(fmt::format("{:%I:%M:%S %p}", now), ':');
+        timestamp = Utils::splitString(fmt::format("{:%I:%M:%S %p}", *local_tm), ':');
         std::string ampm = Utils::isAMorPM(timestamp[2]);
         timestamp[2].erase(timestamp[2].size() - 3);
         m_timeSettingText->setString(ampm.c_str());
     }
     else
-        timestamp = Utils::splitString(fmt::format("{:%H:%M:%S}", now), ':');
+        timestamp = Utils::splitString(fmt::format("{:%H:%M:%S}", *local_tm), ':');
     log::debug("timestamp: {}", timestamp);
     m_hourInput->setString(timestamp[0]);
     m_minuteInput->setString(timestamp[1]);
@@ -1378,7 +1390,7 @@ void EditPopup::onSave(CCObject* obj) {
     // std::string time = "";
 
     if (!m_isCreate) {
-        m_isEdited = (year != m_cellDates[0] || month != m_cellDates[1] || day != m_cellDates[2] || hour != m_cellTimes[0] || minute != m_cellTimes[1] || second != m_cellTimes[2] || m_coinsCollected[0] != m_cell->m_coinsCollected[0] || m_coinsCollected[1] != m_cell->m_coinsCollected[1] || m_coinsCollected[2] != m_cell->m_coinsCollected[2] || ((m_isPlatformer) ? (levelMilliseconds != m_cellLevelTimes[3] || levelSeconds != m_cellLevelTimes[2] || levelMinutes != m_cellLevelTimes[1] || levelHours != m_cellLevelTimes[0] || stat2 != m_cell->m_points) : (stat1 != m_cell->m_jumps || stat2 != m_cell->m_attempts)));
+        m_isEdited = (year != m_cellDates[0] || month != m_cellDates[1] || day != m_cellDates[2] || hour != m_cellTimes[0] || minute != m_cellTimes[1] || second != m_cellTimes[2] || m_coinsCollected[0] != m_cell->m_coinsCollected[0] || m_coinsCollected[1] != m_cell->m_coinsCollected[1] || m_coinsCollected[2] != m_cell->m_coinsCollected[2] || ((m_isPlatformer) ? (levelMilliseconds != m_cellLevelTimes[3] || levelSeconds != m_cellLevelTimes[2] || levelMinutes != m_cellLevelTimes[1] || levelHours != m_cellLevelTimes[0] || stat2 != m_cell->m_points) : (stat1 != m_cell->m_attempts || stat2 != m_cell->m_jumps)));
         bool eYear = year != m_cellDates[0];
         bool eMonth = month != m_cellDates[1];
         bool eDay = day != m_cellDates[2];
@@ -1413,13 +1425,13 @@ void EditPopup::onSave(CCObject* obj) {
             log::debug("eLevelSeconds: {}", eLevelSeconds);
             log::debug("eLevelMinutes: {}", eLevelMinutes);
             log::debug("eLevelHours: {}", eLevelHours);
-            log::debug("eStat2: {}", eStat2);
+            log::debug("eStat2: {}, stat2: {}, cellPoints: {}", eStat2, stat2, m_cell->m_points);
         } else {
-            eStat1 = stat1 != m_cell->m_jumps;
-            eStat2 = stat2 != m_cell->m_attempts;
+            eStat1 = stat1 != m_cell->m_attempts;
+            eStat2 = stat2 != m_cell->m_jumps;
 
-            log::debug("eStat1: {}", eStat1);
-            log::debug("eStat2: {}", eStat2);
+            log::debug("eStat1: {}, stat1: {}, cellJumps: {}", eStat1, stat1, m_cell->m_attempts);
+            log::debug("eStat2: {}, stat2: {}, cellAttempts: {}", eStat2, stat2, m_cell->m_jumps);
         }
 
     }
@@ -1436,7 +1448,8 @@ void EditPopup::onSave(CCObject* obj) {
     else {
         m_popup->updateCell(m_cell, newRebeat);
     }
-    
+
+    log::debug("m_coinsCollected: {}", m_coinsCollected);
     keyBackClicked();
 }
 
