@@ -16,3 +16,8 @@ The following stats are saved for each completion:
 * Blue Button: Changes the Completions button to a blue variant
 
 Thanks to [Zilko](user:10300913) for helping develop the mod!
+
+---
+# Mod Previews
+
+![test](https://cdn.discordapp.com/attachments/938257044383875105/1406044862637146322/thumb1.png)\

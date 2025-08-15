@@ -38,7 +38,7 @@ class $modify(FapGJBaseGameLayer, GJBaseGameLayer) {
 				continue;
 
 			auto* effectSprite = geode::cast::typeinfo_cast<EffectGameObject*>(obj);
-			if (!effectSprite) // weird, but just in case
+			if (!effectSprite)
 				continue;
 
 			auto objectRect = effectSprite->getObjectRect();
@@ -59,17 +59,6 @@ class $modify(FapGJBaseGameLayer, GJBaseGameLayer) {
 
 };
 
-/*std::string getLevelID(GJGameLevel* level) {
-	std::string id;
-
-	if (level->m_isEditable)
-		id = "c" + std::to_string(EditorIDs::getID(level, true));
-	else
-		id = std::to_string(level->m_levelID.value());
-
-	return id;
-}*/
-
 class $modify(FapPlayLayer, PlayLayer) {
 	bool levelHasCoins() {
 		auto& coinObjects = static_cast<FapGJBaseGameLayer*>(static_cast<GJBaseGameLayer*>(this))->m_fields->m_coinObjects;
@@ -78,7 +67,6 @@ class $modify(FapPlayLayer, PlayLayer) {
 
 	void resetLevel() {
 		PlayLayer::resetLevel();
-		//static_cast<FapGJBaseGameLayer*>(static_cast<GJBaseGameLayer*>(this))->m_fields->m_coinObjects.clear();
 		if (!levelHasCoins())
 			return;
 
@@ -163,21 +151,6 @@ class $modify(FapPlayLayer, PlayLayer) {
 
 		if (m_isPracticeMode || m_isTestMode)
 			return PlayLayer::levelComplete();
-			
-		/*if (Mod::get()->getSettingValue<bool>("confirm-completion")) {
-			geode::createQuickPopup(
-				"Confirm Completion",
-				"Do you want to <cj>save</c> this completion?",
-				"Cancel", "Save",
-				[this](auto, bool btn2) {
-            		if (btn2)  {
-						createCompletion();
-					}
-				}
-			);
-		}
-		else
-			createCompletion();*/
 
 		std::string id = std::to_string(EditorIDs::getID(m_level, true));
 		if (m_level->m_isEditable) 
@@ -192,18 +165,11 @@ class $modify(FapPlayLayer, PlayLayer) {
 		matjson::Value newRebeat;
 
 		newRebeat["name"] = fmt::format("Completion {}", rebeats.size() + 1);
-
-		/*if (m_isPlatformer)
-			newRebeat["platformer"] = true;
-		else newRebeat["platformer"] = false;*/
 		
 		std::time_t now_time_t = system_clock::to_time_t(system_clock::now());
 		std::string timestamp = fmt::format("{:%Y-%m-%d %H:%M:%S}", *std::localtime(&now_time_t));
 		log::debug("timestamp: {}", timestamp);
 		auto splitTime = Utils::splitString(timestamp, ' ');
-		/*auto tm = *std::localtime(&now_time_t);
-		auto date = fmt::format("{:%Y-%m-%d}", tm);
-		auto time = Utils::getTime(fmt::format("{%H:%M:%S}", tm));*/
 
 		log::debug("(main.cpp) time: {}", splitTime[1]);
 		
@@ -215,8 +181,6 @@ class $modify(FapPlayLayer, PlayLayer) {
 		newRebeat["time"] = splitTime[1];
 		
 		GameManager* gm = GameManager::get();
-		// GJBaseGameLayer* bgl = GJBaseGameLayer::get();
-		// GameStatsManager* gsm = GameStatsManager::sharedState();
 		
 		matjson::Value icons;
 		IconType type = gm->m_playerIconType;
@@ -233,7 +197,7 @@ class $modify(FapPlayLayer, PlayLayer) {
 		auto coinObjects = static_cast<FapGJBaseGameLayer*>(static_cast<GJBaseGameLayer*>(this))->m_fields->m_coinObjects;
 		matjson::Value coins;
 
-		coins["amount"] = coinObjects.size(); //m_level->m_coins;
+		coins["amount"] = coinObjects.size();
 
 		for (int i = 0; i < coinObjects.size(); i++) {
 			coins[std::to_string(i).c_str()] = collectedCoins[i];
@@ -262,8 +226,6 @@ class $modify(FapPlayLayer, PlayLayer) {
 			else
 				formattedTime = fmt::format("{}.{:03}", seconds, static_cast<int>((time - seconds) * 1000));
 
-			//log::debug("time: {}, formatted: {}", time, formattedTime);
-
 			newRebeat["level_time"] = formattedTime;
 
 
@@ -283,12 +245,6 @@ class $modify(FapPlayLayer, PlayLayer) {
 		rebeats.push(newRebeat);
 		
 		Mod::get()->setSavedValue(id, rebeats);
-		
-		// std::string iconData = fmt::format("|{},{},{},{},{}", gm->getPlayerFrame(), gm->m_playerColor.value(), gm->m_playerColor2.value(), gm->m_playerGlowColor, std::to_string(gm->m_playerGlow));
-		// log::debug("icondata: {}", iconData);
-		
-		// rebeats.push(timestamp + iconData);
-		// log::debug("push: {}", timestamp + iconData);
 
 		PlayLayer::levelComplete();
 	}
@@ -325,8 +281,6 @@ class $modify(FapLevelInfoLayer, LevelInfoLayer) {
 			actionsMenu->addChild(rebeatButton);
 			actionsMenu->updateLayout();
 		}
-		
-		//rebeatButton->setPosition(-185, 20);
 	
 		return true;
 	}
@@ -366,34 +320,6 @@ class $modify(FapEditLevelLayer, EditLevelLayer) {
 			actionsMenu->addChild(rebeatButton);
 			actionsMenu->updateLayout();
 		}
-		//ebeatButton->setPosition(-185, 20);
-
-		/*SimplePlayer* icon = SimplePlayer::create(gm->getPlayerFrame());
-		icon->setPosition({23.f, 23.5f});
-		icon->setScale(0.75f);
-		//icon->getChildByType<CCSprite*>(0)->setAnchorPoint({0, 0.5});
-
-		icon->setColor(gm->colorForIdx(gm->getPlayerColor()));
-		icon->setSecondColor(gm->colorForIdx(gm->getPlayerColor2()));
-		icon->m_hasGlowOutline = gm->getPlayerGlow();
-
-		if (icon->m_hasGlowOutline)
-			icon->enableCustomGlowColor(gm->colorForIdx(gm->getPlayerGlowColor()));
-		else
-			icon->disableCustomGlowColor();
-
-		icon->updateColors();
-		icon->setRotation(25.f);
-		rebeatButton->addChild(icon);
-
-		// auto trophy = CCSprite::create("trophy_icon.png"_spr);
-		// trophy->setScale(0.50f);
-		// trophy->setPosition({30.f, 16.f});
-		// rebeatButton->addChild(trophy);
-
-		auto arrow = CCSprite::create("tracker_arrow_02.png"_spr);
-		arrow->setPosition({23, 23});
-		rebeatButton->addChild(arrow);*/
 	
 		return true;
 	}
@@ -418,7 +344,6 @@ class $modify(FapPauseLayer, PauseLayer) {
 			menu_selector(FapPauseLayer::onButton)
 		);
 		rebeatButton->setID("rebeatBtn"_spr);
-		//rebeatButton->setPosition(-185, 20);
 
 		if (!Loader::get()->isModLoaded("geode.node-ids")) {
             CCMenu* menu = CCMenu::create();
@@ -460,10 +385,10 @@ class $modify(FapEndLevelLayer, EndLevelLayer) {
 		);
 
 		rebeatButton->setID("rebeatBtn"_spr);
-		//rebeatButton->setPosition(-185, 20);
 		auto btnMenu = m_mainLayer->getChildByID("button-menu");
 		btnMenu->addChild(rebeatButton);
 		auto level = PlayLayer::get()->m_level;
+		
 		if (level->m_isEditable && !level->isPlatformer())
 			rebeatButton->setPosition({178, 115});
 		else

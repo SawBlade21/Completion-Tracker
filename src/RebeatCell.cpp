@@ -30,7 +30,8 @@ bool RebeatCell::init() {
     bg->setOpacity(25);
     bg->setPosition({5, 0});
     bg->setAnchorPoint({0, 0});
-    bg->setContentSize({370, 40});
+    bg->setContentSize({740, 80});
+    bg->setScale(0.5f);
 	addChild(bg);
 
     m_rebeatIndex = m_popup->m_rebeats;

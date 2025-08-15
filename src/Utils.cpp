@@ -90,11 +90,18 @@ std::string Utils::convertTime(std::string time) {
 }
 
 std::optional<std::chrono::system_clock::time_point> Utils::convertDate(std::string date) {
-    std::istringstream ss(date);
-    std::chrono::system_clock::time_point tp;
+    // std::istringstream ss(date);
+    // std::chrono::system_clock::time_point tp;
 
-    // Parse the string using a format specifier
-    ss >> std::chrono::parse("%Y-%m-%d %H:%M:%S", tp);
+    // // Parse the string using a format specifier
+    // ss >> std::chrono::parse("%Y-%m-%d %H:%M:%S", tp);
+
+    std::tm tm = {};
+    std::istringstream ss(date);
+    ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+
+    std::time_t timeVal = std::mktime(&tm);
+    std::chrono::system_clock::time_point tp = std::chrono::system_clock::from_time_t(timeVal);
 
     if (ss.fail()) {
         log::debug("fail 2");
