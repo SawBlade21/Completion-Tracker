@@ -18,6 +18,10 @@ The following stats are saved for each completion:
 Thanks to [Zilko](user:10300913) for helping develop the mod!
 
 ---
-# Mod Previews
+## Previews
 
-![test](https://cdn.discordapp.com/attachments/938257044383875105/1406044862637146322/thumb1.png)\
+![Thumb 1](sawblade.completion_tracker/thumb1.png?width=300)
+
+![Thumb 2](sawblade.completion_tracker/thumb2.png?width=300)
+
+![Thumb 3](sawblade.completion_tracker/thumb3.png?width=300)

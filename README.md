@@ -1,23 +1,27 @@
-# Rebeat Tracker
-This is where she makes a mod.
+# Completion Tracker
+by [Sawblade](https://gdbrowser.com/u/sawbladegd)
 
-<img src="logo.png" width="150" alt="the mod's logo" />
+---
+Tracks every time you complete an online or created level, with a completion editor!
+The following stats are saved for each completion:
+* Name, Date, Time, Coins, and Icon
+* Jumps and Attempts on <cj>Classic</c> levels
+* Level Time and Points on <cp>Platformer</c> levels
 
-*Update logo.png to change your mod's icon (please)*
+---
+# Mod Options
+* Time Format: Use either 12-hour or 24-hour format when saving and displayng times
+* Endscreen Button: Adds a button to the endscreen to open the Completions list
+* Autofill: Automatically autofills data from the level when creating a completion
+* Blue Button: Changes the Completions button to a blue variant
 
-## Getting started
-We recommend heading over to [the getting started section on our docs](https://docs.geode-sdk.org/getting-started/) for useful info on what to do next.
+Thanks to [Zilko](https://gdbrowser.com/u/zilko) for helping develop the mod!
 
-## Build instructions
-For more info, see [our docs](https://docs.geode-sdk.org/getting-started/create-mod#build)
-```sh
-# Assuming you have the Geode CLI set up already
-geode build
-```
+---
+## Previews
 
-# Resources
-* [Geode SDK Documentation](https://docs.geode-sdk.org/)
-* [Geode SDK Source Code](https://github.com/geode-sdk/geode/)
-* [Geode CLI](https://github.com/geode-sdk/cli)
-* [Bindings](https://github.com/geode-sdk/bindings/)
-* [Dev Tools](https://github.com/geode-sdk/DevTools)
+<img src="resources/thumb1.png" width="300" alt="Preview #1" />
+
+<img src="resources/thumb2.png" width="300" alt="Preview #2" />
+
+<img src="resources/thumb3.png" width="300" alt="Preview #3" />

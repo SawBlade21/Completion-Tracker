@@ -11,6 +11,9 @@
 	"version": "v1.0.0",
 	"developer": "Sawblade",
 	"description": "Tracks all your level completions",
+	"links": {
+		"source": "https://github.com/SawBlade21/Completion-Tracker"
+	},
 	"dependencies": {
 		"cvolton.level-id-api": {
 			"version": ">=v1.2.2",
@@ -35,7 +38,10 @@
 			"resources/auto_btn.png",
 			"resources/garage_btn.png",
 			"resources/GJ_coinsIcon2_gray_001.png",
-			"resources/sort_btn.png"
+			"resources/sort_btn.png",
+			"resources/thumb1.png",
+			"resources/thumb2.png",
+			"resources/thumb3.png"
         ]
     },
 	"settings": {
