@@ -1014,7 +1014,7 @@ void EditPopup::onAutoName(CCObject* obj) {
 
 void EditPopup::onAutoDate(CCObject* obj) {
     auto now = std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now());
-    auto splitDate = Utils::splitString(std::format("{:%Y-%m-%d}", now), '-');
+    auto splitDate = Utils::splitString(fmt::format("{:%Y-%m-%d}", now), '-');
     m_yearInput->setString(splitDate[0]);
     m_monthInput->setString(splitDate[1]);
     m_dayInput->setString(splitDate[2]);
