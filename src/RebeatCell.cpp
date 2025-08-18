@@ -9,7 +9,7 @@ std::string formatStat(std::string stat) {
     std::string formattedStat = "";
 
     for (int i = 1; i <= stat.length(); i++) {
-        formattedStat= stat[stat.length() - i] + formattedStat;
+        formattedStat = stat[stat.length() - i] + formattedStat;
 
         if (i % 3 == 0 && i != stat.length()) {
             formattedStat = "," + formattedStat;

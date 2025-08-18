@@ -224,8 +224,7 @@ class $modify(FapPlayLayer, PlayLayer) {
 
 			newRebeat["level_time"] = formattedTime;
 
-			std::string points = GameToolbox::pointsToString(m_gameState.m_points);
-			newRebeat["points"] = points;
+			newRebeat["points"] = std::to_string(m_gameState.m_points);
 		}
 		else {
 			auto attempts = std::to_string(m_level->m_attempts.value());
