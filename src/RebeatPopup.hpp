@@ -27,25 +27,23 @@ private:
     void onReverse(CCObject* obj);
 
     
-    public:
+public:
     
+    int m_rebeats = 0;
+    int m_prevAttempts;
+    int m_sortType = 0;
+    bool m_hasCompletion;
+    bool m_isRobtopLevel;
+    bool m_isReverse = false;
     GJGameLevel* m_level;
     CCArray* m_cells;
     matjson::Value m_rebeatsList;
     std::string m_id;
-    int m_rebeats = 0;
-    int m_prevAttempts;
-    bool m_hasCompletion;
-    // bool m_calculateAttempts;
-    bool m_isRobtopLevel;
     ListView* m_listView;
     GJCommentListLayer* m_list;
-    CCLabelBMFont* m_rebeatCount;
     Scrollbar* m_scrollbar;
-    // CCLabelBMFont* m_noneLabel;
+    CCLabelBMFont* m_rebeatCount;
     CCMenu* m_rightButtonMenu;
-    int m_sortType = 0;
-    bool m_isReverse = false;
     
     static RebeatPopup* create(GJGameLevel* level);
     

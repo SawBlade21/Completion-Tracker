@@ -1,5 +1,4 @@
 #include "Utils.hpp"
-#include <regex>
 #include <chrono>
 
 using namespace geode::prelude;
@@ -25,32 +24,29 @@ std::vector<std::string> Utils::splitString(const std::string& str, char delimit
     std::vector<std::string> splitString;
     std::stringstream ss(str);
     std::string item;
+
     while (std::getline(ss, item, delimiter)) {
         splitString.push_back(item);
     }
+
     return splitString;
 }
 
 std::string Utils::getTime(std::string time) {
-    if (time == "")
-        return time;
+    if (time == "") return time;
 
     std::string format = Mod::get()->getSettingValue<std::string>("time-format");
     std::tm tm = {};
     std::istringstream ss(time);
-
-    //std::regex ampmRegex("(AM|PM)", std::regex_constants::icase);
     auto is12h = time.find("AM") != std::string::npos || time.find("PM") != std::string::npos;
-
-    log::debug("is12h: {}", is12h);
     
     if (format == "12-hour") {
-        if (is12h)
-            return time;
+        if (is12h) return time;
 
         ss >> std::get_time(&tm, "%H:%M:%S");
-        if (ss.fail())
+        if (ss.fail()) {
             return time;
+        }
         else {
             std::ostringstream out;
             out << std::put_time(&tm, "%I:%M:%S %p");
@@ -59,12 +55,13 @@ std::string Utils::getTime(std::string time) {
         
     }
     else {
-        if (!is12h)
-            return time;
+        if (!is12h) return time;
         
         ss >> std::get_time(&tm, "%I:%M:%S %p");
-        if (ss.fail())
+
+        if (ss.fail()) {
             return time;
+        }
         else {
             std::ostringstream out;
             out << std::put_time(&tm, "%H:%M:%S");
@@ -79,7 +76,6 @@ std::string Utils::convertTime(std::string time) {
     std::istringstream ss(time);
     ss >> std::get_time(&tm, "%I:%M:%S %p");
     if (ss.fail()) {
-        log::debug("fail 1");
         return time;
     }
     else {
@@ -90,12 +86,6 @@ std::string Utils::convertTime(std::string time) {
 }
 
 std::optional<std::chrono::system_clock::time_point> Utils::convertDate(std::string date) {
-    // std::istringstream ss(date);
-    // std::chrono::system_clock::time_point tp;
-
-    // // Parse the string using a format specifier
-    // ss >> std::chrono::parse("%Y-%m-%d %H:%M:%S", tp);
-
     std::tm tm = {};
     std::istringstream ss(date);
     ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
@@ -103,21 +93,12 @@ std::optional<std::chrono::system_clock::time_point> Utils::convertDate(std::str
     std::time_t timeVal = std::mktime(&tm);
     std::chrono::system_clock::time_point tp = std::chrono::system_clock::from_time_t(timeVal);
 
-    if (ss.fail()) {
-        log::debug("fail 2");
-        return std::nullopt;
-    }
-    else
-        return tp;
+    if (ss.fail()) return std::nullopt;
+    else return tp;
 }
 
 std::string Utils::isAMorPM(std::string time) {
-    log::debug("a");
-    if (time.find("AM") != std::string::npos)
-        return "AM";
-    log::debug("b");
-    if (time.find("PM") != std::string::npos)
-        return "PM";
-    log::debug("c");
+    if (time.find("AM") != std::string::npos) return "AM";
+    if (time.find("PM") != std::string::npos) return "PM";
     return "NA";
 }

@@ -20,7 +20,6 @@ private:
 
     void onInfo(CCObject* obj);
     
-
 public:
 
     static YoutubeLayer* create(EditPopup* popup);

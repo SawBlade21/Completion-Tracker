@@ -10,21 +10,16 @@ std::string formatStat(std::string stat) {
 
     for (int i = 1; i <= stat.length(); i++) {
         formattedStat= stat[stat.length() - i] + formattedStat;
-        if (i % 3 == 0 && i != stat.length())
+
+        if (i % 3 == 0 && i != stat.length()) {
             formattedStat = "," + formattedStat;
+        }
     }
 
     return formattedStat;
 }
 
 bool RebeatCell::init() {
-
-    // auto bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-    // bg->setColor(ccc3(138, 77, 46));
-    // // bg->setPosition(spr->getContentSize() / 2 - ccp(0, 3.5f));
-    // bg->setContentSize({40, 380});
-    // addChild(bg);
-
     CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
 	bg->setColor({0, 0, 0});
     bg->setOpacity(25);
@@ -35,7 +30,6 @@ bool RebeatCell::init() {
 	addChild(bg);
 
     m_rebeatIndex = m_popup->m_rebeats;
-    log::debug("indexs: {}, {}", m_popup->m_rebeats, m_rebeatIndex);
     m_date = "";
     m_time = "";
     std::string dateText = "";
@@ -43,38 +37,27 @@ bool RebeatCell::init() {
     bool hasCoins = false;
 
     auto menu = CCMenu::create();
-    menu->setPosition(this->getPositionX(), this->getPositionY());
-    this->addChild(menu);
+    menu->setPosition(getPositionX(), getPositionY());
+    addChild(menu);
 
     if (m_rebeat.contains("date")) {
         m_date = m_rebeat["date"].asString().unwrapOr("");
 
         if (m_date[0] == 'f') {
-        m_date.erase(0, 1);
-        // if (rebeats == 1)
-        //     rebeatText = fmt::format("Completion", rebeats);
+            m_date.erase(0, 1);
         }
 
         dateText += m_date;
-        
-        /*auto m_dateLabel = CCLabelBMFont::create(m_date.c_str(), "chatFont.fnt");
-        m_dateLabel->setPosition(42.5f, 12.f);
-        m_dateLabel->setAnchorPoint({0, 0.5});
-        m_dateLabel->setScale(0.6f);
-        m_dateLabel->setOpacity(170);
-
-        this->addChild(m_dateLabel);*/
     }
 
     if (m_rebeat.contains("time")) {
         m_time = Utils::getTime(m_rebeat["time"].asString().unwrapOr(""));
-        log::debug("(rebeatcell) time: {}", m_time);
-        if (m_time != "")
+        
+        if (m_time != "") {
             dateText = fmt::format("{} {}", dateText, m_time);
+        }
     }
 
-    log::debug("(rbcell) date: {}, time: {}", m_date, m_time);
-    log::debug("dateText: {}", dateText);
     if (dateText != "") {
         m_dateLabel = CCLabelBMFont::create(dateText.c_str(), "chatFont.fnt");
         m_dateLabel->setPosition(42.5f, 12.f);
@@ -82,7 +65,7 @@ bool RebeatCell::init() {
         m_dateLabel->setScale(0.6f);
         m_dateLabel->setOpacity(170);
 
-        this->addChild(m_dateLabel);
+        addChild(m_dateLabel);
     }
 
     if (m_rebeat.contains("link")) {
@@ -97,7 +80,8 @@ bool RebeatCell::init() {
         if (m_dateLabel) {
             float labelEdge = m_dateLabel->getPosition().x + m_dateLabel->getContentSize().width * m_dateLabel->getScale();
             ytBtn->setPosition({labelEdge + 10.f, 12.f});
-        } else {
+        } 
+        else {
             ytBtn->setPosition(42.5f + (ytSprite->getContentWidth() / 2), 12.f);
         }
     }
@@ -106,8 +90,9 @@ bool RebeatCell::init() {
         auto iconData = m_rebeat["icons"];
         auto iconTypeInt = iconData["type"].asInt().unwrapOr(0);
 
-        if (iconTypeInt < 0 || iconTypeInt > 8)
+        if (iconTypeInt < 0 || iconTypeInt > 8) {
             iconTypeInt = 0;
+        }
 
         m_iconType =  static_cast<IconType>(iconTypeInt);
         m_iconFrame = iconData["frame"].asInt().unwrapOr(0);
@@ -131,6 +116,7 @@ bool RebeatCell::init() {
         else {
             auto iconSprite = icon->getChildByType<CCSprite*>(0);
             iconSprite->setAnchorPoint({0, 0.5});
+            
             if (m_iconType == IconType::Ufo && iconSprite->getContentWidth() > 40) {
                 iconSprite->setScale(0.75f);
             }
@@ -140,13 +126,15 @@ bool RebeatCell::init() {
         icon->setSecondColor(gm->colorForIdx(m_iconColor2));
         icon->m_hasGlowOutline = m_hasGlow;
 
-        if (icon->m_hasGlowOutline)
+        if (icon->m_hasGlowOutline) {
             icon->enableCustomGlowColor(gm->colorForIdx(m_glowColor));
-        else
+        }
+        else {
             icon->disableCustomGlowColor();
+        }
 
         icon->updateColors();
-        this->addChild(icon);
+        addChild(icon);
     }
 
     if (m_rebeat.contains("watermark")) {
@@ -162,28 +150,23 @@ bool RebeatCell::init() {
         auto coinData = m_rebeat["coins"];
         m_coinAmount = coinData["amount"].asInt().unwrapOr(0);
 
-        if (m_coinAmount > 3)
+        if (m_coinAmount > 3) {
             m_coinAmount = 3;
+        }
 
         hasCoins = (m_coinAmount > 0);
 
         if (hasCoins && m_coinAmount <= 3) {
-            std::vector<float> xPositions; //(coinAmount == 3) ? {156, 170, 174} : (coinAmount == 2) ? {163, 177} : {170};
+            std::vector<float> xPositions;
+
+            float coinCenter = 210.f;
+            float coinOffset = 14.f;
 
             switch (m_coinAmount) {
-                case 3:
-                    xPositions = {156.f, 170.f, 184.f};
-                    break;
-                case 2:
-                    xPositions = {163.f, 177.f};
-                    break;
-                case 1:
-                    xPositions = {170.f};
-                    break;
+                case 1: xPositions = {coinCenter}; break;
+                case 2: xPositions = {coinCenter - coinOffset / 2, coinCenter + coinOffset / 2}; break;
+                case 3: xPositions = {coinCenter - coinOffset, coinCenter, coinCenter + coinOffset}; break;
             }
-
-            //bool isRobtopLevel = false;
-            //float xPos = 156.f;
 
             if (m_popup->m_id[0] != 'c') {
                 int levelID = stoi(m_popup->m_id);
@@ -192,33 +175,29 @@ bool RebeatCell::init() {
 
             for (int j = 0; j < m_coinAmount; j++) {
                 m_coinsCollected[j]= coinData[std::to_string(j)].asBool().unwrapOr(false);
-                //m_coinsCollected[j] = isCollected;
                 CCSprite* coinSprite;
                 CCTexture2D* coinTexture;
 
                 if (m_popup->m_isRobtopLevel) {
 
-                    if (m_coinsCollected[j])
+                    if (m_coinsCollected[j]) {
                         coinSprite = CCSprite::createWithSpriteFrameName("GJ_coinsIcon_001.png");
-                    else 
+                    }
+                    else {
                         coinSprite = CCSprite::createWithSpriteFrameName("GJ_coinsIcon_gray_001.png");
+                    }
                 }
                 else {
                     coinSprite = CCSprite::createWithSpriteFrameName("GJ_coinsIcon2_001.png");
 
-                    if (!m_coinsCollected[j])
+                    if (!m_coinsCollected[j]) {
                         coinSprite->setColor({165, 165, 165});
-                    /*if (isCollected)
-                        coinSprite = CCSprite::createWithSpriteFrameName("GJ_coinsIcon_001.png");
-                    else
-                        coinSprite = CCSprite::create("GJ_coinsIcon2_gray_001.png"_spr);*/
+                    }
                 }
 
-                coinSprite->setPosition({xPositions[j] + 40.f, 20.f});
+                coinSprite->setPosition({xPositions[j], 20.f});
                 coinSprite->setScale(0.75f);
-                this->addChild(coinSprite);
-
-                //xPos += 14.f;
+                addChild(coinSprite);
             }
 
         }
@@ -230,16 +209,16 @@ bool RebeatCell::init() {
         m_levelTime = m_rebeat["level_time"].asString().unwrapOr("");
         auto timeLabel = CCLabelBMFont::create(m_levelTime.c_str(), "bigFont.fnt");
         timeLabel->setAnchorPoint({0, 0.5});
-        timeLabel->setPosition(216.f + offset + 40.f, 30.5f);
+        timeLabel->setPosition(256.f + offset, 30.5f);
         timeLabel->setScale(0.4f);
-        timeLabel->limitLabelWidth(42.f - offset, 0.4f, 0.001f); //82
+        timeLabel->limitLabelWidth(42.f - offset, 0.4f, 0.001f);
 
         auto timeSprite = CCSprite::createWithSpriteFrameName("GJ_timeIcon_001.png");
-        timeSprite->setPosition({208 + offset + 40.f, 29});
+        timeSprite->setPosition({248 + offset, 29});
         timeSprite->setScale(0.5f);
 
-        this->addChild(timeLabel);
-        this->addChild(timeSprite);
+        addChild(timeLabel);
+        addChild(timeSprite);
     }
 
     if (m_rebeat.contains("points")) {
@@ -247,113 +226,78 @@ bool RebeatCell::init() {
 
         auto pointsLabel = CCLabelBMFont::create(formatStat(m_points).c_str(), "bigFont.fnt");
         pointsLabel->setAnchorPoint({0, 0.5});
-        pointsLabel->setPosition(216.f + offset + 40.f, 12.5);
+        pointsLabel->setPosition(256.f + offset, 12.5);
         pointsLabel->setScale(0.4f);
         pointsLabel->limitLabelWidth(42.f - offset, 0.4f, 0.001f);
         
         auto pointsSprite = CCSprite::createWithSpriteFrameName("GJ_pointsIcon_001.png");
-        pointsSprite->setPosition({208 + offset + 40.f, 11});
+        pointsSprite->setPosition({248 + offset, 11});
         pointsSprite->setScale(0.5f);
 
-        this->addChild(pointsLabel);
-        this->addChild(pointsSprite);
+        addChild(pointsLabel);
+        addChild(pointsSprite);
     }
 
     if (m_rebeat.contains("attempts")) {
         m_attempts = m_rebeat["attempts"].asString().unwrapOr("");
 
-        // if (m_popup->m_calculateAttempts) {
-        //     auto newAttempts = std::to_string(std::stoi(m_attempts) - m_popup->m_prevAttempts);
-        //     m_popup->m_prevAttempts = std::stoi(m_attempts);
-        //     m_attempts = newAttempts;
-        // }
-
-        // std::string formattedAttempts = "";
-        // for (int i = 1; i <= m_attempts.length(); i++) {
-        //     formattedAttempts = m_attempts[m_attempts.length() - i] + formattedAttempts;
-        //     if (i % 3 == 0 && i != m_attempts.length())
-        //         formattedAttempts = "," + formattedAttempts;
-        // }
-        // 50000 50,000
-
         auto attemptsLabel = CCLabelBMFont::create(formatStat(m_attempts).c_str(), "bigFont.fnt");
         attemptsLabel->setAnchorPoint({0, 0.5});
-        attemptsLabel->setPosition(216 + offset + 40.f, 30.5);
+        attemptsLabel->setPosition(256 + offset, 30.5);
         attemptsLabel->setScale(0.4f);
         attemptsLabel->limitLabelWidth(42.f - offset, 0.4f, 0.001f); //90
 
-        // if (m_popup->m_calculateAttempts)
-        //     attemptsLabel->setColor(ccc3(0, 255, 0));
-
-        // auto attemptsSprite = CCSprite::create("attempts.png"_spr);
-        // attemptsSprite->setPosition({208 + offset + 40.f, 29});
-        // attemptsSprite->setScale(0.53f);
-
         auto attemptsSprite = CCSprite::createWithSpriteFrameName("miniSkull_001.png");
-        attemptsSprite->setPosition({208 + offset + 40.f, 29});
+        attemptsSprite->setPosition({248 + offset, 29});
         attemptsSprite->setScale(0.53f);
 
-        this->addChild(attemptsLabel);
-        this->addChild(attemptsSprite);
+        addChild(attemptsLabel);
+        addChild(attemptsSprite);
     }
 
     if (m_rebeat.contains("jumps")) {
         m_jumps = m_rebeat["jumps"].asString().unwrapOr("");
 
-        // std::string formattedJumps = "";
-        // for (int i = 1; i <= m_jumps.length(); i++) {
-        //     formattedJumps = m_jumps[m_jumps.length() - i] + formattedJumps;
-        //     if (i % 3 == 0 && i != m_jumps.length())
-        //         formattedJumps = "," + formattedJumps;
-        // }
-
         auto jumpsLabel = CCLabelBMFont::create(formatStat(m_jumps).c_str(), "bigFont.fnt");
         jumpsLabel->setAnchorPoint({0, 0.5});
-        jumpsLabel->setPosition(216 + offset + 40.f, 12.5f);
+        jumpsLabel->setPosition(256 + offset, 12.5f);
         jumpsLabel->setScale(0.4f);
         jumpsLabel->limitLabelWidth(42.f - offset, 0.4f, 0.001f);
 
         auto jumpsSprite = CCSprite::create("jumps.png"_spr);
-        jumpsSprite->setPosition({208 + offset + 40.f, 11});
+        jumpsSprite->setPosition({248 + offset, 11});
         jumpsSprite->setScale(0.5f);
     
-        this->addChild(jumpsLabel);
-        this->addChild(jumpsSprite);
+        addChild(jumpsLabel);
+        addChild(jumpsSprite);
     }
     
-    //std::string rebeatText;
 
     if (m_rebeat.contains("name")) {
         m_name = m_rebeat["name"].asString().unwrapOr("Unnamed Completion");
-        //rebeatText = m_name;
     }
-    else 
+    else {
         m_name = fmt::format("Completion {}", m_rebeatIndex);
-
-    //rebeats++;
+    }
 
     auto rebeatLabel = CCLabelBMFont::create(m_name.c_str(), "bigFont.fnt");
     rebeatLabel->setAnchorPoint({0, 0.5});
     rebeatLabel->setPosition(42.f, 28.f);
     rebeatLabel->setScale(0.55f);
-    rebeatLabel->limitLabelWidth(96.f + 40.f, 0.55f, 0.001f);
+    rebeatLabel->limitLabelWidth(136.f, 0.55f, 0.001f);
 
-    this->addChild(rebeatLabel);
+    addChild(rebeatLabel);
 
     auto trashSprite = CCSprite::createWithSpriteFrameName("GJ_trashBtn_001.png");
     trashSprite->setScale(0.71f);
     auto trashButton = CCMenuItemSpriteExtra::create(trashSprite, this, menu_selector(RebeatCell::onDelete));
-    trashButton->setPosition({355.f, 20.f}); //317 // no +40.f
-    //trashButton->setScale(0.65f);
-    //trashButton->setAnchorPoint({1, 0.5});
+    trashButton->setPosition({355.f, 20.f});
     menu->addChild(trashButton);
 
     auto editSprite = CCSprite::createWithSpriteFrameName("GJ_viewLevelsBtn_001.png");
     editSprite->setScale(0.65f);
     auto editButton = CCMenuItemSpriteExtra::create(editSprite, this, menu_selector(RebeatCell::onEdit));
-    editButton->setPosition({277.f + 40.f, 20.f}); //317
-    //trashButton->setScale(0.65f);
-    //trashButton->setAnchorPoint({1, 0.5});
+    editButton->setPosition({317, 20.f});
     menu->addChild(editButton);
 
     return true;
@@ -376,7 +320,7 @@ RebeatCell* RebeatCell::create(const matjson::Value &rebeat, RebeatPopup* popup)
 void RebeatCell::onDelete(CCObject* obj) {
     geode::createQuickPopup(
         "Warning", 
-        "Are you sure you want to <cr>delete</c> this completion? This <cr>cannot</c> be undone.",
+        fmt::format("Are you sure you want to <cr>delete</c> '{}'? This <cr>cannot</c> be undone.", m_name),
         "Cancel", "Delete",
         [this](auto, bool btn2) {
             if (btn2)  {

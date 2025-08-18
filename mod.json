@@ -18,22 +18,24 @@
 		"cvolton.level-id-api": {
 			"version": ">=v1.2.2",
 			"importance": "required"
+		},
+		"geode.node-ids": {
+			"version": ">=v1.21.1",
+			"importance": "required"
+		}
+	},
+	"incompatibilities": 
+	{
+		"user95401.scrollbar_everywhere": {
+			"version": ">=1.0.0",
+			"importance": "conflicting"
 		}
 	},
 	"resources": {
         "sprites": [
             "resources/jumps.png",
-			"resources/attempts.png",
 			"resources/rebeat_btn_01.png",
 			"resources/rebeat_btn_02.png",
-			"resources/rebeat_btn_01b.png",
-			"resources/rebeat_btn_02b.png",
-			"resources/blank_rebeat_btn.png",
-			"resources/trophy_icon.png",
-			"resources/tracker_arrow_01.png",
-			"resources/tracker_arrow_02.png",
-			"resources/rebeat_btn_02.png",
-			"resources/rebeat_btn_03.png",
 			"resources/paste_icon_btn.png",
 			"resources/auto_btn.png",
 			"resources/garage_btn.png",
@@ -61,12 +63,6 @@
 		"autofill": {
 			"name": "Autofill",
 			"description": "Automatically autofill data from the level when opening the 'Create Completion' menu.",
-			"type": "bool",
-			"default": false
-		},
-		"blue-button": {
-			"name": "Use Blue Button",
-			"description": "Uses a blue version of the completion menu button instead of the default green.",
 			"type": "bool",
 			"default": false
 		}

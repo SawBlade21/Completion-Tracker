@@ -11,21 +11,17 @@ using namespace geode::prelude;
 using namespace std::chrono;
 
 bool EditPopup::setup() {
-    //auto titleWidth = m_title->getContentSize().width;
-    //this->m_title->limitLabelWidth(335.f, 0.8f, 0.001f);
-    //this->m_title->setPositionY(273.f);
     if (m_isCreate) {
-        this->setTitle("Create Completion");
+        setTitle("Create Completion");
     }
     else {
-        this->setTitle(fmt::format("Edit {}", m_cell->m_name));
+        setTitle(fmt::format("Edit {}", m_cell->m_name));
     }
 
     auto titleWidth = m_title->getContentSize().width;
-    this->m_title->limitLabelWidth(320.f, 0.8f, 0.001f);
-    //this->m_title->setPositionY(273.f);
+    m_title->limitLabelWidth(320.f, 0.8f, 0.001f);
 
-    //sclae9sprites
+    // BGs
     auto leftBg = CCScale9Sprite::create("square02b_001.png");
     leftBg->setContentSize({132, 200});
     leftBg->setPosition({78, 150});
@@ -51,7 +47,7 @@ bool EditPopup::setup() {
     m_mainLayer->addChild(rightBg);
 
 
-    // menu
+    // Menu
     auto popupMenu = CCMenu::create();
     popupMenu->setContentSize({440, 290});
     popupMenu->setPosition({0, 0});
@@ -59,7 +55,7 @@ bool EditPopup::setup() {
     m_mainLayer->addChild(popupMenu);
 
 
-    // youtube
+    // Youtube
     auto ytSprite = CCSprite::createWithSpriteFrameName("gj_ytIcon_001.png");
     ytSprite->setScale(0.75f);
     auto ytBtn = CCMenuItemSpriteExtra::create(ytSprite, this, menu_selector(EditPopup::onYoutube));
@@ -68,11 +64,12 @@ bool EditPopup::setup() {
     ytBtn->setPosition({titleEdge + 18.f, 270.f});
     popupMenu->addChild(ytBtn);
     
-    if (!m_isCreate)
+    if (!m_isCreate) {
         m_ytLink = m_cell->m_ytLink;
+    }
 
 
-    // info buttons
+    // Info buttons
     auto mainInfoSprite = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
     mainInfoSprite->setScale(0.75f);
 
@@ -96,8 +93,7 @@ bool EditPopup::setup() {
     popupMenu->addChild(statsInfoBtn);
 
 
-    // icon stuff
-
+    // Icon
     auto iconArrowSprite = CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png");
     iconArrowSprite->setScale(0.55f);
     auto leftIconArrow = CCMenuItemSpriteExtra::create(iconArrowSprite, this, menu_selector(EditPopup::onLeftIconArrow));
@@ -133,8 +129,9 @@ bool EditPopup::setup() {
     color1Label->setScale(0.525f);
     color1Label->setPosition({24, 14});
     color1Sprite->addChild(color1Label);
-    m_color1Btn = CCMenuItemSpriteExtra::create(color1Sprite, this, menu_selector(EditPopup::onColor1));
+    m_color1Btn = CCMenuItemSpriteExtra::create(color1Sprite, this, menu_selector(EditPopup::onColor));
     m_color1Btn->setPosition({190, 155});
+    m_color1Btn->setTag(1);
     popupMenu->addChild(m_color1Btn);
 
     auto color2Sprite = CCSprite::createWithSpriteFrameName("GJ_colorBtn_001.png");
@@ -143,8 +140,9 @@ bool EditPopup::setup() {
     color2Label->setScale(0.525f);
     color2Label->setPosition({24, 14});
     color2Sprite->addChild(color2Label);
-    m_color2Btn = CCMenuItemSpriteExtra::create(color2Sprite, this, menu_selector(EditPopup::onColor2));
+    m_color2Btn = CCMenuItemSpriteExtra::create(color2Sprite, this, menu_selector(EditPopup::onColor));
     m_color2Btn->setPosition({220, 155});
+    m_color2Btn->setTag(2);
     popupMenu->addChild(m_color2Btn);
 
     auto color3Sprite = CCSprite::createWithSpriteFrameName("GJ_colorBtn_001.png");
@@ -153,8 +151,9 @@ bool EditPopup::setup() {
     color3Label->setScale(0.525f);
     color3Label->setPosition({24, 14});
     color3Sprite->addChild(color3Label);
-    m_color3Btn = CCMenuItemSpriteExtra::create(color3Sprite, this, menu_selector(EditPopup::onColor3));
+    m_color3Btn = CCMenuItemSpriteExtra::create(color3Sprite, this, menu_selector(EditPopup::onColor));
     m_color3Btn->setPosition({250, 155});
+    m_color3Btn->setTag(3);
     popupMenu->addChild(m_color3Btn);
 
     m_icon = SimplePlayer::create(1);
@@ -163,8 +162,9 @@ bool EditPopup::setup() {
         resetIconValues();
         updateColors();
     }
-    else
+    else {
         updateIcon();
+    }
 
     m_icon->setPosition({220, 200});
     m_mainLayer->addChild(m_icon);
@@ -185,7 +185,8 @@ bool EditPopup::setup() {
     glowLabel->setScale(0.45f);
     popupMenu->addChild(glowLabel);
 
-    // bg titles
+
+    // BG Titles
     auto infoTitle = CCLabelBMFont::create("Info", "goldFont.fnt");
     infoTitle->setPosition({78, 240});
     infoTitle->setScale(0.65f);
@@ -202,13 +203,12 @@ bool EditPopup::setup() {
     m_mainLayer->addChild(statsTitle);
 
 
-    // bottom menu
+    // Bottom Menu
     auto bottomMenu = CCMenu::create();
     bottomMenu->setLayout(RowLayout::create()
         ->setGap(10.f)
         ->setAxisAlignment(AxisAlignment::Center)
         ->setAutoScale(false)
-        //->setAxisReverse(true)
     );
     bottomMenu->setPosition({220, 25});
     m_mainLayer->addChild(bottomMenu);
@@ -225,18 +225,13 @@ bool EditPopup::setup() {
 
     auto saveSprite = ButtonSprite::create("Save");
     saveSprite->setScale(0.9f);
-    //saveSprite->m_BGSprite->setContentWidth(107.250f);
     auto saveBtn = CCMenuItemSpriteExtra::create(saveSprite, this, menu_selector(EditPopup::onSave));
-    //saveBtn->setContentWidth(107.250f);
     bottomMenu->addChild(saveBtn);
-
-    // auto deleteBtn = CCMenuItemSpriteExtra::create(ButtonSprite::create("Quit"), this, menu_selector(EditPopup::onDelete));
-    // bottomMenu->addChild(deleteBtn);
 
     bottomMenu->updateLayout();
 
 
-    // name
+    // Name
     auto nameLabel = CCLabelBMFont::create("Name", "bigFont.fnt");
     nameLabel->setPosition({78, 215});
     nameLabel->setScale(0.5f);
@@ -264,8 +259,8 @@ bool EditPopup::setup() {
     m_mainLayer->addChild(m_nameInput);
 
 
-    // date
-    // e.g. 2025-06-21 02:38:47
+    // Date
+    // e.g. 2025-06-21 02:38:47 PM
     auto dateLabel = CCLabelBMFont::create("Date", "bigFont.fnt");
     dateLabel->setScale(0.5f);
     dateLabel->setPosition(78, 160);
@@ -314,7 +309,8 @@ bool EditPopup::setup() {
         m_mainLayer->addChild(dash);
     }
 
-    // time
+
+    // Time
     auto timeLabel = CCLabelBMFont::create("Time", "bigFont.fnt");
     timeLabel->setScale(0.5f);
     timeLabel->setPosition(78, 105);
@@ -352,7 +348,6 @@ bool EditPopup::setup() {
     m_secondInput->setCommonFilter(CommonFilter::Uint);
     m_secondInput->setMaxCharCount(2);
     m_mainLayer->addChild(m_secondInput);
-
     
     if (Mod::get()->getSettingValue<std::string>("time-format") == "12-hour") {
         auto timeBg = CCScale9Sprite::create("square02b_001.png");
@@ -366,14 +361,12 @@ bool EditPopup::setup() {
         m_timeSettingText = CCLabelBMFont::create((m_isCreate) ? "AM" : m_cellTimes[3].c_str(), "bigFont.fnt");
         m_timeSettingText->setScale(0.3f);
         m_timeSettingText->setPosition({78, 60});
-        //m_timeSettingText->setColor(ccc3(150, 150, 150));
         m_mainLayer->addChild(m_timeSettingText);
         
         auto timeArrowSprite = CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png");
         timeArrowSprite->setScale(0.35f);
     
         auto timeRightArrow = CCMenuItemSpriteExtra::create(timeArrowSprite, this, menu_selector(EditPopup::onTimeArrow));
-        //timeUpArrow->setRotation(90);
         timeRightArrow->setRotationY(180);
         timeRightArrow->setPosition({97, 60});
         popupMenu->addChild(timeRightArrow);
@@ -385,28 +378,23 @@ bool EditPopup::setup() {
 
 
     if (!m_isCreate) {
-        //auto cellDate = m_cell->m_date;
-        //std::vector<std::string> splitCellDate = Utils::splitString(cellDate, ' ');
-        if (m_cell->m_date != "")
+        if (m_cell->m_date != "") {
             m_cellDates = Utils::splitString(m_cell->m_date, '-');
+        }
 
         if (m_cell->m_time != "") {
             auto splitTimes = Utils::splitString(Utils::getTime(m_cell->m_time), ':');
-            log::debug("1, {}", splitTimes);
+
             if (m_timeSettingText) {
                 m_cellTimes[3] = Utils::isAMorPM(splitTimes[splitTimes.size() - 1]);
-                log::debug("2");
                 splitTimes[splitTimes.size() - 1].erase(splitTimes[splitTimes.size() - 1].size() - 3);
-                log::debug("3");
             }
             
             for (int i = 0; i < splitTimes.size(); i++) {
                 m_cellTimes[i + (3 - splitTimes.size())] = splitTimes[i];
             }
-            log::debug("4");
         }
 
-        log::debug("dates: {}\ntimes: {}", m_cellDates, m_cellTimes);
         onResetDate(nullptr);
         onResetTime(nullptr);
     }
@@ -420,19 +408,22 @@ bool EditPopup::setup() {
     }
 
 
-    // coins
+    // Coins
     auto coinsLabel = CCLabelBMFont::create("Coins", "bigFont.fnt");
     coinsLabel->setPosition({362, 215});
     coinsLabel->setScale(0.5f);
     m_mainLayer->addChild(coinsLabel);
 
-    if (m_isCreate)
+    if (m_isCreate) {
         m_coinAmount = m_popup->m_level->m_coins;
-    else
+    }
+    else {
         m_coinAmount = m_cell->m_coinAmount;
+    }
 
-    if (m_coinAmount > 3)
+    if (m_coinAmount > 3) {
         m_coinAmount = 3;
+    }
 
     if (m_coinAmount > 0) {
         auto resetCoinsSprite = CCSprite::createWithSpriteFrameName("GJ_undoBtn_001.png");
@@ -460,28 +451,25 @@ bool EditPopup::setup() {
         }
 
         std::vector<float> xPositions;
+        float coinCenter = 362.f;
+        float coinOffset = 24.f;
 
         switch (m_coinAmount) {
-            case 3:
-                xPositions = {338.f, 362.f, 386.f};
-                break;
-            case 2:
-                xPositions = {350.f, 374.f};
-                break;
-            case 1:
-                xPositions = {362.f};
-                break;
+            case 3: xPositions = {coinCenter - coinOffset, coinCenter, coinCenter + coinOffset}; break;
+            case 2: xPositions = {coinCenter - coinOffset / 2, coinCenter + coinOffset / 2}; break;
+            case 1: xPositions = {coinCenter}; break;
         }
     
-
         auto coin1Sprite = CCSprite::createWithSpriteFrameName(coinSpriteName.c_str());
         coin1Sprite->setScale(0.85f);
 
         CCSprite* coin1GraySprite;
-        if (m_popup->m_isRobtopLevel)
+        if (m_popup->m_isRobtopLevel) {
             coin1GraySprite = CCSprite::createWithSpriteFrameName(coinGraySpriteName.c_str());
-        else
+        }
+        else {
             coin1GraySprite = CCSprite::create(coinGraySpriteName.c_str());
+        }
 
         coin1GraySprite->setScale(0.85f);
     
@@ -495,17 +483,18 @@ bool EditPopup::setup() {
         }
     
         popupMenu->addChild(m_coin1Toggle);
-    
 
         if (m_coinAmount > 1) {
             auto coin2Sprite = CCSprite::createWithSpriteFrameName(coinSpriteName.c_str());
             coin2Sprite->setScale(0.85f);
 
             CCSprite* coin2GraySprite;
-            if (m_popup->m_isRobtopLevel)
+            if (m_popup->m_isRobtopLevel) {
                 coin2GraySprite = CCSprite::createWithSpriteFrameName(coinGraySpriteName.c_str());
-            else
+            }
+            else {
                 coin2GraySprite = CCSprite::create(coinGraySpriteName.c_str());
+            }
 
             coin2GraySprite->setScale(0.85f);
         
@@ -520,16 +509,17 @@ bool EditPopup::setup() {
         
             popupMenu->addChild(m_coin2Toggle);
 
-
             if (m_coinAmount > 2) {
                 auto coin3Sprite = CCSprite::createWithSpriteFrameName(coinSpriteName.c_str());
                 coin3Sprite->setScale(0.85f);
 
                 CCSprite* coin3GraySprite;
-                if (m_popup->m_isRobtopLevel)
+                if (m_popup->m_isRobtopLevel) {
                     coin3GraySprite = CCSprite::createWithSpriteFrameName(coinGraySpriteName.c_str());
-                else
+                }
+                else {
                     coin3GraySprite = CCSprite::create(coinGraySpriteName.c_str());
+                }
 
                 coin3GraySprite->setScale(0.85f);
             
@@ -551,20 +541,21 @@ bool EditPopup::setup() {
         noCoinsLabel->setScale(0.45f);
         noCoinsLabel->setPosition({362, 195});
         noCoinsLabel->setOpacity(125);
-        //noCoinsLabel->setColor({165, 165, 165});
         m_mainLayer->addChild(noCoinsLabel);
     }
 
 
-    // attempts & jumps / level time & points
-    if (m_isCreate)
+    // Attempts & Jumps / Level Time & Points
+    if (m_isCreate) {
         m_isPlatformer = m_popup->m_level->isPlatformer();
-    else
+    }
+    else {
         m_isPlatformer = m_cell->m_levelTime != "" || m_cell->m_points != "";
+    }
 
     if (m_isPlatformer) {
 
-        // level time
+        // Level Time
         auto levelTimeLabel = CCLabelBMFont::create("Level Time", "bigFont.fnt");
         levelTimeLabel->setScale(0.45f);
         levelTimeLabel->setPosition(362, 160);
@@ -644,19 +635,15 @@ bool EditPopup::setup() {
             splitCellLevelTimes[lastIndex] = secondsAndMilliseconds[0];
             splitCellLevelTimes.push_back(secondsAndMilliseconds[1]);
 
-            log::debug("i: {}", splitCellLevelTimes.size() - 1);
-
             int amount = 3 - (splitCellLevelTimes.size() - 1);
             for (int i = 0; i < splitCellLevelTimes.size(); i++) {
-                log::debug("add: {}", splitCellLevelTimes[i]);
                 m_cellLevelTimes[amount + i] = splitCellLevelTimes[i];
             }
-            //std::reverse(m_cellLevelTimes.begin(), m_cellLevelTimes.end());
-            log::debug("leveltime: {}", m_cellLevelTimes);
+
             onResetLevelTime(nullptr);
         }
 
-        // points
+        // Points
         auto pointsLabel = CCLabelBMFont::create("Points", "bigFont.fnt");
         pointsLabel->setPosition({362, 105});
         pointsLabel->setScale(0.5f);
@@ -680,15 +667,16 @@ bool EditPopup::setup() {
         m_pointsInput->setMaxCharCount(10);
         m_pointsInput->setMaxCharCount(10);
 
-        if (!m_isCreate)
+        if (!m_isCreate) {
             m_pointsInput->setString(m_cell->m_points);
+        }
 
         m_pointsInput->setPosition({362, 80});
         m_mainLayer->addChild(m_pointsInput);
 
     } else {
 
-        // attempts
+        // Attempts
         auto attemptsLabel = CCLabelBMFont::create("Attempts", "bigFont.fnt");
         attemptsLabel->setPosition({362, 160});
         attemptsLabel->setScale(0.5f);
@@ -718,7 +706,7 @@ bool EditPopup::setup() {
         m_mainLayer->addChild(m_attemptsInput);
 
 
-        // jumps
+        // Jumps
         auto jumpsLabel = CCLabelBMFont::create("Jumps", "bigFont.fnt");
         jumpsLabel->setPosition({362, 105});
         jumpsLabel->setScale(0.5f);
@@ -739,8 +727,9 @@ bool EditPopup::setup() {
         m_jumpsInput = TextInput::create(170.f, "...", "bigFont.fnt");
         m_jumpsInput->setScale(0.65f);
 
-        if (!m_isCreate)
+        if (!m_isCreate) {
             m_jumpsInput->setString(m_cell->m_jumps);
+        }
 
         m_jumpsInput->setPosition({362, 80});
         m_jumpsInput->setCommonFilter(CommonFilter::Uint);
@@ -771,7 +760,6 @@ bool EditPopup::setup() {
 }
 
 void EditPopup::resetIconValues() {
-    log::debug("resetIconValues");
     if (m_isCreate) {
         m_iconType = IconType::Cube;
         m_iconFrame = 0;
@@ -780,12 +768,6 @@ void EditPopup::resetIconValues() {
         m_glowColor = 12;
         m_hasGlow = false;
     } else {
-        /*m_iconType = static_cast<IconType>(m_cell->m_iconData["type"].asInt().unwrapOr(0));
-        m_iconFrame = m_cell->m_iconData["frame"].asInt().unwrapOr(0);
-        m_iconColor = m_cell->m_iconData["color_1"].asInt().unwrapOr(12);
-        m_iconColor2 = m_cell->m_iconData["color_2"].asInt().unwrapOr(12);
-        m_glowColor = m_cell->m_iconData["glow_color"].asInt().unwrapOr(12);
-        m_hasGlow = m_cell->m_iconData["has_glow"].asBool().unwrapOr(false);*/
         m_iconType = m_cell->m_iconType;
         m_iconFrame = m_cell->m_iconFrame;
         m_iconColor = m_cell->m_iconColor;
@@ -794,8 +776,6 @@ void EditPopup::resetIconValues() {
         m_hasGlow = m_cell->m_hasGlow;
     }
 
-    //m_iconFrames[static_cast<int>(m_iconType)] = m_iconFrame;
-
     int iconTypeInt = static_cast<int>(m_iconType);
     for (int i = 0; i < 9; i++) {
         m_iconFrames[i] = (i == iconTypeInt) ? m_iconFrame : 0;
@@ -803,39 +783,33 @@ void EditPopup::resetIconValues() {
 
     updateIcon();
 
-    if (m_glowToggle)
+    if (m_glowToggle) {
         m_glowToggle->toggle(m_hasGlow);
+    }
 }
 
 void EditPopup::updateIcon() {
-    log::debug("updateIcon");
-    //log::debug("iconFrames: {}\niconType: {}", m_iconFrames, static_cast<int>(m_iconType));
-    //log::debug("type: {}\nframe: {}\ncolor1: {}\ncolor2: {}\nglowColor: {}\nhasGlow: {}", static_cast<int>(m_iconType), m_iconFrame, m_iconColor, m_iconColor2, m_glowColor, m_hasGlow);
     auto gm = GameManager::get();
     m_icon->updatePlayerFrame(m_iconFrame, m_iconType);
     m_icon->setColor(gm->colorForIdx(m_iconColor));
     m_icon->setSecondColor(gm->colorForIdx(m_iconColor2));
     m_icon->m_hasGlowOutline = m_hasGlow;
 
-    if (m_icon->m_hasGlowOutline)
+    if (m_icon->m_hasGlowOutline) {
         m_icon->enableCustomGlowColor(gm->colorForIdx(m_glowColor));
-    else
+    }
+    else {
         m_icon->disableCustomGlowColor();
+    }
 
     m_icon->updateColors();
-
-    //m_iconFrames[static_cast<int>(m_iconType)] = m_iconFrame;
-
-    log::debug("done");
 }
 
 void EditPopup::onGarage(CCObject* obj) {
-    log::debug("garage");
     IconSelectLayer::create(this)->show();
 }
 
 void EditPopup::onPasteIcon(CCObject* obj) {
-    log::debug("pasteIcon");
     GameManager* gm = GameManager::get();
     m_iconType = gm->m_playerIconType;
     m_iconFrame = Utils::getIconFrame(m_iconType);
@@ -847,32 +821,28 @@ void EditPopup::onPasteIcon(CCObject* obj) {
     for (int i = 0; i < 9; i++) {
         m_iconFrames[i] = Utils::getIconFrame(static_cast<IconType>(i));
     }
-
-    //m_iconFrames[0] = Utils::getIconFrame(IconType::Cube);
-
-    //m_iconFrames[static_cast<int>(m_iconType)] = m_iconFrame;
     
     updateIcon();
     updateColors();
 
-    if (m_glowToggle)
+    if (m_glowToggle) {
         m_glowToggle->toggle(m_hasGlow);
+    }
 }
 
 void EditPopup::onResetIcon(CCObject* obj) {
-    log::debug("resetIcon");
     resetIconValues();
     updateIcon();
     updateColors();
 }
 
 void EditPopup::onRightIconArrow(CCObject*) {
-    log::debug("rightArrow");
     int type = static_cast<int>(m_iconType);
     type++;
 
-    if (type > 8)
+    if (type > 8) {
         type = 0;
+    }
 
     m_iconType = static_cast<IconType>(type);
     m_iconFrame = m_iconFrames[type];
@@ -880,41 +850,28 @@ void EditPopup::onRightIconArrow(CCObject*) {
 }
 
 void EditPopup::onLeftIconArrow(CCObject*) {
-    log::debug("leftArrow");
     int type = static_cast<int>(m_iconType);
     type--;
     
-    if (type < 0)
+    if (type < 0) {
         type = 8;
+    }
 
     m_iconType = static_cast<IconType>(type);
     m_iconFrame = m_iconFrames[type];
     updateIcon();
 }
 
-void EditPopup::onColor1(CCObject* obj) {
-    log::debug("color1");
-    ColorSelectLayer::create(this, 1)->show();
-}
-
-void EditPopup::onColor2(CCObject* obj) {
-    log::debug("color2");
-    ColorSelectLayer::create(this, 2)->show();
-}
-
-void EditPopup::onColor3(CCObject* obj) {
-    log::debug("color3");
-    ColorSelectLayer::create(this, 3)->show();
+void EditPopup::onColor(CCObject* obj) {
+    ColorSelectLayer::create(this, static_cast<CCMenuItemSpriteExtra*>(obj)->getTag())->show();
 }
 
 void EditPopup::onToggleGlow(CCObject* obj) {
-    log::debug("toggleGlow");
     m_hasGlow = !m_hasGlow;
     updateIcon();
 }
 
 void EditPopup::colorSelected(const cocos2d::ccColor3B& color, int colorIndex, int colorID) {
-    log::debug("colorSelected");
     CCSprite* colorSprite = nullptr;
     switch(colorIndex) {
         case 1:
@@ -930,8 +887,6 @@ void EditPopup::colorSelected(const cocos2d::ccColor3B& color, int colorIndex, i
             m_glowColor = colorID;
             break;
     }
-
-    log::debug("color: {}, {}", m_iconColor, colorID);
 
     colorSprite->setColor(color);
     updateIcon();
@@ -950,47 +905,13 @@ void EditPopup::iconSelected(int frame) {
     updateIcon();
 }
 
-/*
-void EditPopup::onUpArrow(CCObject* obj) {
-    log::debug("up");
-    //auto index = std::find(std::begin(m_timeSettings), std::end(m_timeSettings), m_timeSettingText->getString());
-    int i;
-    for (i = 0; i < 3; i++) {
-        if (m_timeSettings[i] == std::string_view(m_timeSettingText->getString()))
-            break;
-    }
-
-    i++;
-
-    if (i > 2) 
-        i = 0;
-
-    m_timeSettingText->setString(m_timeSettings[i].c_str());
-}
-
-void EditPopup::onDownArrow(CCObject* obj) {
-    log::debug("down");
-    int i;
-    for (i = 0; i < 3; i++) {
-        if (m_timeSettings[i] == std::string_view(m_timeSettingText->getString()))
-            break;
-    }
-
-    i--;
-
-    if (i < 0) 
-        i = 2;
-
-    m_timeSettingText->setString(m_timeSettings[i].c_str());
-}
-*/
-
 void EditPopup::onResetName(CCObject* obj) {
-    log::debug("resetName");
-    if (m_isCreate)
+    if (m_isCreate) {
         m_nameInput->setString("");
-    else
+    }
+    else {
         m_nameInput->setString(m_cell->m_name);
+    }
 }
 
 void EditPopup::onResetDate(CCObject* obj) {
@@ -1007,41 +928,43 @@ void EditPopup::onResetDate(CCObject* obj) {
 }
 
 void EditPopup::onResetTime(CCObject* obj) {
-    log::debug("resetTime");
     if (m_isCreate) {
         m_hourInput->setString("");
         m_minuteInput->setString("");
         m_secondInput->setString("");
-        if (m_timeSettingText)
+        if (m_timeSettingText) {
             m_timeSettingText->setString("AM");
+        }
     }
     else {
         m_hourInput->setString(m_cellTimes[0]);
         m_minuteInput->setString(m_cellTimes[1]);
         m_secondInput->setString(m_cellTimes[2]);
-        if (m_timeSettingText)
+        if (m_timeSettingText) {
             m_timeSettingText->setString(m_cellTimes[3].c_str());
+        }
     }
 }
 
 void EditPopup::onResetAttempts(CCObject* obj) {
-    log::debug("resetAttempts");
-    if (m_isCreate)
+    if (m_isCreate) {
         m_attemptsInput->setString("");
-    else
+    }
+    else {
         m_attemptsInput->setString(m_cell->m_attempts);
+    }
 }
 
 void EditPopup::onResetJumps(CCObject* obj) {
-    log::debug("resetJumps");
-    if (m_isCreate)
+    if (m_isCreate) {
         m_jumpsInput->setString("");
-    else
+    }
+    else {
         m_jumpsInput->setString(m_cell->m_jumps);
+    }
 }
 
 void EditPopup::onResetCoins(CCObject* obj) {
-    log::debug("resetCoins");
     if (m_coin1Toggle) {
         m_coinsCollected[0] = (m_isCreate) ? false : m_cell->m_coinsCollected[0];
         m_coin1Toggle->toggle(m_coinsCollected[0]);
@@ -1060,7 +983,6 @@ void EditPopup::onResetCoins(CCObject* obj) {
 }
 
 void EditPopup::onResetLevelTime(CCObject* obj) {
-    log::debug("resetLevelTime");
     if (m_isCreate) {
         m_levelHoursInput->setString("");
         m_levelMinutesInput->setString("");
@@ -1075,22 +997,22 @@ void EditPopup::onResetLevelTime(CCObject* obj) {
 }
 
 void EditPopup::onResetPoints(CCObject* obj) {
-    log::debug("resetPoints");
-    if (m_isCreate)
+    if (m_isCreate) {
         m_pointsInput->setString("");
-    else   
+    }
+    else {
         m_pointsInput->setString(m_cell->m_points);
+    }
 }
 
 
 void EditPopup::onAutoName(CCObject* obj) {
-    log::debug("autoName");
-    if (m_isCreate)
+    if (m_isCreate) {
         m_nameInput->setString(fmt::format("Completion {}", std::to_string(m_popup->m_rebeats + 1)));
+    }
 }
 
 void EditPopup::onAutoDate(CCObject* obj) {
-    log::debug("autoDate");
     auto now = std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now());
     auto splitDate = Utils::splitString(std::format("{:%Y-%m-%d}", now), '-');
     m_yearInput->setString(splitDate[0]);
@@ -1099,20 +1021,21 @@ void EditPopup::onAutoDate(CCObject* obj) {
 }
 
 void EditPopup::onAutoTime(CCObject* obj) {
-    
-    // auto now = floor<seconds>(system_clock::now());
     std::time_t now_time_t = system_clock::to_time_t(system_clock::now());
     auto local_tm = std::localtime(&now_time_t);
     std::vector<std::string> timestamp;
+
     if (m_timeSettingText) {
         timestamp = Utils::splitString(fmt::format("{:%I:%M:%S %p}", *local_tm), ':');
         std::string ampm = Utils::isAMorPM(timestamp[2]);
+
         timestamp[2].erase(timestamp[2].size() - 3);
         m_timeSettingText->setString(ampm.c_str());
     }
-    else
+    else {
         timestamp = Utils::splitString(fmt::format("{:%H:%M:%S}", *local_tm), ':');
-    log::debug("timestamp: {}", timestamp);
+    }
+
     m_hourInput->setString(timestamp[0]);
     m_minuteInput->setString(timestamp[1]);
     m_secondInput->setString(timestamp[2]);
@@ -1120,10 +1043,6 @@ void EditPopup::onAutoTime(CCObject* obj) {
 }
 
 void EditPopup::onAutoCoins(CCObject* obj) {
-    log::debug("autoCoins");
-    log::debug("{}, {}, {}", m_popup->m_level->m_firstCoinVerified.value(), m_popup->m_level->m_secondCoinVerified.value(), m_popup->m_level->m_thirdCoinVerified.value());
-    //return;
-
     if (m_coin1Toggle) {
         m_coinsCollected[0] = static_cast<bool>(m_popup->m_level->m_firstCoinVerified.value());
         m_coin1Toggle->toggle(m_coinsCollected[0]);
@@ -1141,55 +1060,36 @@ void EditPopup::onAutoCoins(CCObject* obj) {
 }
 
 void EditPopup::onAutoAttempts(CCObject* obj) {
-    log::debug("autoAttempts");
     m_attemptsInput->setString(std::to_string(m_popup->m_level->m_attempts.value()));
 }
 
 void EditPopup::onAutoJumps(CCObject* obj) {
-    log::debug("autoJumps");
     m_jumpsInput->setString(std::to_string(m_popup->m_level->m_jumps.value()));
 }
 
 void EditPopup::onAutoLevelTime(CCObject* obj) {
-    log::debug("autoLevelTime");
     int time = m_popup->m_level->m_bestTime;
-    log::debug("bestTime: {}", time);
-
     std::string formattedTime;
 
-    // thanks betterinfo
-    int milliseconds = time % 1000;
-    int seconds = (time / 1000) % 60;
-    int minutes = (time / 60000) % 60;
-    int hours = (time / 3600000);
+    int hours = time / 3600000;
+    int minutes = time / 60000 % 60;
+    int seconds = time / 1000 % 60;
+    int ms = time % 1000;
 
-    if (hours > 0)
-        m_levelHoursInput->setString(std::to_string(hours));
-    else
-        m_levelHoursInput->setString("");
-
-    if (minutes > 0)
-        m_levelMinutesInput->setString(std::to_string(minutes));
-    else
-        m_levelMinutesInput->setString("");
-
+    m_levelHoursInput->setString(hours > 0 ? std::to_string(hours) : "");
+    m_levelMinutesInput->setString(minutes > 0 ? std::to_string(minutes) : "");
     m_levelSecondsInput->setString(std::to_string(seconds));
-    m_levelMillisecondsInput->setString(std::to_string(milliseconds));
+    m_levelMillisecondsInput->setString(std::to_string(ms));
 }
 
 void EditPopup::onAutoPoints(CCObject* obj) {
-    log::debug("autoPoints");
     m_pointsInput->setString(std::to_string(m_popup->m_level->m_bestPoints));
 }
 
-
 void EditPopup::onInfo(CCObject* obj) {
-    log::debug("onInfo");
-    std::string title = fmt::format("{} Completion Info", (m_isCreate) ? "Create" : "Edit");
-
     FLAlertLayer::create(
         nullptr,
-        title.c_str(),
+        fmt::format("{} Completion Info", (m_isCreate) ? "Create" : "Edit").c_str(),
         "This is where you can set the completion's information.\nThe <cg>Reset</c> buttons reset the field to its original value.\nThe <co>Auto</c> buttons autofill the value. Enable the Autocomplete option in the <cy>Mod Settings</c> to automatically apply this to all fields. All fields left empty will be autofilled.",
         "OK",
         nullptr,
@@ -1198,7 +1098,6 @@ void EditPopup::onInfo(CCObject* obj) {
 }
 
 void EditPopup::onInfoInfo(CCObject* obj) {
-    log::debug("onInfoInfo");
     FLAlertLayer::create(
         "Info Help",
         "<cj>Name</c>: The completion title.\n<co>Date</c>: The day of the completion in the format <cp>YYYY-MM-DD</c>.\n<cg>Time</c>: The time of the completion in the format <cp>HH:MM:SS</c> using either 12-hour or 24-hour time. The time format can be changed in the <cy>Mod Settings</c>.",
@@ -1207,7 +1106,6 @@ void EditPopup::onInfoInfo(CCObject* obj) {
 }
 
 void EditPopup::onIconInfo(CCObject* obj) {
-    log::debug("onIconInfo");
     FLAlertLayer::create(
         "Icon Help",
         "Sets the icon displayed in the completion.\nThe <cy>Paste</c> button sets the icons to your current icon set.",
@@ -1216,12 +1114,14 @@ void EditPopup::onIconInfo(CCObject* obj) {
 }
 
 void EditPopup::onStatsInfo(CCObject* obj) {
-    log::debug("onStatsInfo");
     std::string text = "<cj>Coins</c>: Toggle the coins to set which have been collected.";
-    if (m_isPlatformer)
+
+    if (m_isPlatformer) {
         text += "\n<co>Level Time</c>: The amount of in-game time taken to complete the level, as shown on the endscreen.\n<cg>Points</c>: The amount of Points collected in the level. Leave blank if the level does not contain points.";
-    else
+    }
+    else {
         text += "\n<co>Attempts</c>: The total amount of attempts the completion took.\n<cg>Jumps</c>: The number of jumps during the completion session, as shown on the endscreen.";
+    }
 
     FLAlertLayer::create(
         "Stats Help",
@@ -1230,53 +1130,23 @@ void EditPopup::onStatsInfo(CCObject* obj) {
     )->show();
 }
 
-/*void EditPopup::onCoin1(CCObject* obj) {
-    log::debug("coin1");
-}
-
-void EditPopup::onCoin2(CCObject* obj) {
-    log::debug("coin1");
-}
-
-void EditPopup::onCoin3(CCObject* obj) {
-    log::debug("coin1");
-}*/
-
 void EditPopup::onCoin(CCObject* obj) {
-    log::debug("onCoin");
     auto toggle = static_cast<CCMenuItemToggler*>(obj);
-    int index = toggle->getTag(); //coins have 0 based index for now, so coin 1 has tag 0
-    log::debug("index: {}", index);
-    log::debug("A: m_coinsCollected[{}]: {}", index, m_coinsCollected[index]);
+    int index = toggle->getTag();
     m_coinsCollected[index] = !m_coinsCollected[index];
-    log::debug("B: m_coinsCollected[{}]: {}", index, m_coinsCollected[index]);
 }
 
 void EditPopup::onTimeArrow(CCObject* obj) {
-    log::debug("onTimeArrow");
     m_timeSettingText->setString((std::string_view(m_timeSettingText->getString()) == "AM") ? "PM" : "AM");
-}
-
-
-EditPopup* EditPopup::create(RebeatPopup* popup) {
-    auto ret = new EditPopup();
-    ret->m_popup = popup;
-    ret->m_isCreate = true;
-    if (ret->initAnchored(440, 290)) { //370, 267 "GJ_square02.png"
-        ret->autorelease();
-        return ret;
-    }
-
-    delete ret;
-    return nullptr;
 }
 
 EditPopup* EditPopup::create(RebeatPopup* popup, RebeatCell* cell) {
     auto ret = new EditPopup();
     ret->m_popup = popup;
     ret->m_cell = cell;
-    ret->m_isCreate = false;
-    if (ret->initAnchored(440, 290)) { //370, 267 "GJ_square02.png"
+    ret->m_isCreate = (cell == nullptr);
+
+    if (ret->initAnchored(440, 290)) {
         ret->autorelease();
         return ret;
     }
@@ -1285,70 +1155,35 @@ EditPopup* EditPopup::create(RebeatPopup* popup, RebeatCell* cell) {
     return nullptr;
 }
 
-// notification
-    // Loader::get()->queueInMainThread([] {
-    //     Notification::create("Please enter the name", NotificationIcon::Error)->show();
-    // });
-
 void EditPopup::onSave(CCObject* obj) {
-    log::debug("save");
     std::string name = (m_nameInput->getString() != "") ? m_nameInput->getString() : "Unnamed Completion";
     std::string year = (m_yearInput->getString() != "") ? m_yearInput->getString() : "????";
     std::string month = (m_monthInput->getString() != "") ? m_monthInput->getString() : "??";
     std::string day = (m_dayInput->getString() != "") ? m_dayInput->getString() : "??";
     std::string date = fmt::format("{}-{}-{}", year, month, day);
 
-    /*std::string date;
-    std::string year = m_yearInput->getString();
-    if (year != "") {
-        date += year;
-        std::string month = m_monthInput->getString();
-        if (month != "") {
-            date += "-" + month;
-            std::string day = m_dayInput->getString();
-            if (day != "") {
-                date += "-" + day;
-            }
-        }
-    }
-    else
-        date = "NA";*/
-
-    /*std::string time;
-    std::string hour = m_hourInput->getString();
-    if (hour != "") {
-        time += hour;
-        std::string minute = m_minuteInput->getString();
-        if (minute != "") {
-            time += ":" + minute;
-            std::string second =  m_secondInput->getString();
-            if (second != "") {
-                time += ":" + second;
-            }
-        }
-    }
-    else 
-        time = "NA";*/
-
     std::string hour = (m_hourInput->getString() != "") ? m_hourInput->getString() : "00";
-    if (hour.length() < 2)
+    if (hour.length() < 2) {
         hour = "0" + hour;
+    }
 
     std::string minute = (m_minuteInput->getString() != "") ? m_minuteInput->getString() : "00";
-    if (minute.length() < 2)
+    if (minute.length() < 2) {
         minute = "0" + minute;
+    }
 
     std::string second = (m_secondInput->getString() != "") ? m_secondInput->getString() : "00";
-    if (second.length() < 2)
+    if (second.length() < 2) {
         second = "0" + second;
+    }
 
     std::string time;
-    if (m_timeSettingText)
+    if (m_timeSettingText) {
         time = fmt::format("{}:{}:{} {}", hour, minute, second, m_timeSettingText->getString());
-    else
+    }
+    else {
         time = fmt::format("{}:{}:{}", hour, minute, second);
-
-    log::debug("(editpopup) time: {}", time);
+    }
 
     std::string stat1;
     std::string stat2;
@@ -1359,7 +1194,6 @@ void EditPopup::onSave(CCObject* obj) {
     std::string levelHours = "";
 
     if (m_isPlatformer) {
-        // valid: 
         std::string levelTime;
         levelMilliseconds = (m_levelMillisecondsInput->getString() != "") ? m_levelMillisecondsInput->getString() : "0";
         levelSeconds = (m_levelSecondsInput->getString() != "") ? m_levelSecondsInput->getString() : "0";
@@ -1384,72 +1218,20 @@ void EditPopup::onSave(CCObject* obj) {
         stat1 = (m_attemptsInput->getString() != "") ? m_attemptsInput->getString() : "0";
         stat2 = (m_jumpsInput->getString() != "") ? m_jumpsInput->getString() : "0";
     }
-    
-    // std::string date = fmt::format("{}-{}-{}", m_yearInput->getString(), m_monthInput->getString(), m_dayInput->getString());
-
-    // std::string time = "";
 
     if (!m_isCreate) {
         m_isEdited = (year != m_cellDates[0] || month != m_cellDates[1] || day != m_cellDates[2] || hour != m_cellTimes[0] || minute != m_cellTimes[1] || second != m_cellTimes[2] || m_coinsCollected[0] != m_cell->m_coinsCollected[0] || m_coinsCollected[1] != m_cell->m_coinsCollected[1] || m_coinsCollected[2] != m_cell->m_coinsCollected[2] || ((m_isPlatformer) ? (levelMilliseconds != m_cellLevelTimes[3] || levelSeconds != m_cellLevelTimes[2] || levelMinutes != m_cellLevelTimes[1] || levelHours != m_cellLevelTimes[0] || stat2 != m_cell->m_points) : (stat1 != m_cell->m_attempts || stat2 != m_cell->m_jumps)));
-        bool eYear = year != m_cellDates[0];
-        bool eMonth = month != m_cellDates[1];
-        bool eDay = day != m_cellDates[2];
-        bool eHour = hour != m_cellTimes[0];
-        bool eMinute = minute != m_cellTimes[1];
-        bool eSecond = second != m_cellTimes[2];
-        bool eCoin1 = m_coinsCollected[0] != m_cell->m_coinsCollected[0];
-        bool eCoin2 = m_coinsCollected[1] != m_cell->m_coinsCollected[1];
-        bool eCoin3 = m_coinsCollected[2] != m_cell->m_coinsCollected[2];
-        bool eStat1;
-        bool eStat2;
-
-        log::debug("m_isEdited: {}", m_isEdited);
-        log::debug("eYear: {}", eYear);
-        log::debug("eMonth: {}", eMonth);
-        log::debug("eDay: {}", eDay);
-        log::debug("eHour: {}", eHour);
-        log::debug("eMinute: {}", eMinute);
-        log::debug("eSecond: {}", eSecond);
-        log::debug("eCoin1: {}", eCoin1);
-        log::debug("eCoin2: {}", eCoin2);
-        log::debug("eCoin3: {}", eCoin3);
-
-        if (m_isPlatformer) {
-            bool eLevelMs = levelMilliseconds != m_cellLevelTimes[3];
-            bool eLevelSeconds = levelSeconds != m_cellLevelTimes[2];
-            bool eLevelMinutes = levelMinutes != m_cellLevelTimes[1];
-            bool eLevelHours = levelHours != m_cellLevelTimes[0];
-            eStat2 = stat2 != m_cell->m_points;
-
-            log::debug("eLevelMs: {}", eLevelMs);
-            log::debug("eLevelSeconds: {}", eLevelSeconds);
-            log::debug("eLevelMinutes: {}", eLevelMinutes);
-            log::debug("eLevelHours: {}", eLevelHours);
-            log::debug("eStat2: {}, stat2: {}, cellPoints: {}", eStat2, stat2, m_cell->m_points);
-        } else {
-            eStat1 = stat1 != m_cell->m_attempts;
-            eStat2 = stat2 != m_cell->m_jumps;
-
-            log::debug("eStat1: {}, stat1: {}, cellJumps: {}", eStat1, stat1, m_cell->m_attempts);
-            log::debug("eStat2: {}, stat2: {}, cellAttempts: {}", eStat2, stat2, m_cell->m_jumps);
-        }
-
     }
-
-    log::debug("\nname: {}\ndate: {}\ntime: {}\nstat1: {}\nstat2: {}\n", name, date, time, stat1, stat2);
 
     matjson::Value newRebeat = dataToJson(name, date, time, static_cast<int>(m_iconType), m_iconFrame, m_iconColor, m_iconColor2, m_glowColor, m_hasGlow, m_coinAmount, m_coinsCollected, stat1, stat2, m_isPlatformer, m_ytLink);
 
     if (m_isCreate) {
         m_popup->addCell(newRebeat);
-        // m_popup->m_rebeatsList.push(newRebeat);
-        // m_popup->refreshList();
     }
     else {
         m_popup->updateCell(m_cell, newRebeat);
     }
 
-    log::debug("m_coinsCollected: {}", m_coinsCollected);
     keyBackClicked();
 }
 
@@ -1486,18 +1268,21 @@ matjson::Value EditPopup::dataToJson(std::string name, std::string date, std::st
         newRebeat["jumps"] = stat2;
     }
 
-    if (ytLink != "")
+    if (ytLink != "") {
         newRebeat["link"] = m_ytLink;
+    }
 
     std::string watermark = "";
     
     if (m_isCreate)
         watermark = "(custom)";
     else {
-        if (m_cell->m_watermark == "" && m_isEdited)
+        if (m_cell->m_watermark == "" && m_isEdited) {
             watermark = "(edited)";
-        else 
+        }
+        else {
             watermark = m_cell->m_watermark;
+        }
     }
 
     newRebeat["watermark"] =  watermark;
@@ -1506,29 +1291,24 @@ matjson::Value EditPopup::dataToJson(std::string name, std::string date, std::st
 }
 
 void EditPopup::onDelete(CCObject* obj) {
-    log::debug("delete");
     keyBackClicked();
 }
 
 void EditPopup::onReset(CCObject* obj) {
-    log::debug("reset");
     geode::createQuickPopup(
         "Warning", 
         "Are you sure you want to <cr>reset</c> all values? This <cr>cannot</c> be undone.",
         "Cancel", "Reset",
         [this](auto, bool btn2) {
             if (btn2)  {
-                //info
                 onResetName(nullptr);
                 onResetDate(nullptr);
                 onResetTime(nullptr);
 
-                //icons
                 resetIconValues();
                 updateIcon();
                 updateColors();
 
-                //stats
                 onResetCoins(nullptr);
                 if (m_isPlatformer) {
                     onResetLevelTime(nullptr);
@@ -1541,7 +1321,6 @@ void EditPopup::onReset(CCObject* obj) {
             }
         }
     );
-    //keyBackClicked();
 }
 
 void EditPopup::onYoutube(CCObject* obj) {
@@ -1562,16 +1341,9 @@ void EditPopup::onCancel(CCObject* obj) {
 }
 
 void EditPopup::onClose(CCObject* obj) {
-    std::string text;
-    
-    if (m_isCreate)
-        text = "Are you sure you want to <cr>cancel</c> creating this completion? All changes will be <cr>lost</c>.";
-    else
-        text = "Are you sure you want to <cr>cancel</c> editing this completion? Any unsaved changes will be <cr>lost</c>.";
-
     geode::createQuickPopup(
         "Warning", 
-        text,
+        fmt::format("Are you sure you want to <cr>cancel</c> {} this completion? All changes will be <cr>lost</c>.", (m_isCreate) ? "creating" : "editing"),
         "Return", "Confirm",
         [this, obj](auto, bool btn2) {
             if (btn2)  {

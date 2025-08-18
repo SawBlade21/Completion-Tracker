@@ -8,23 +8,12 @@ bool SortLayer::setup() {
     menu->setContentSize({360, 260});
     menu->setPosition({180, 130});
     menu->setAnchorPoint({0.5f, 0.5f});
-    /*menu->setLayout(ColumnLayout::create()
-        ->setGap(25.f)
-        ->setAutoScale(false)
-        ->setAxisAlignment(AxisAlignment::Start)
-        ->setCrossAxisAlignment(AxisAlignment::End)
-        ->setCrossAxisLineAlignment(AxisAlignment::Start)
-        ->setGrowCrossAxis(true)
-        ->setCrossAxisOverflow(false)
-        ->setAutoGrowAxis(std::nullopt)
-    );*/
     m_mainLayer->addChild(menu);
 
     float xpos = -130.f;
     float ypos = 66.f;
 
     std::vector<std::string> labels = {"None", "Name", "Date", "Coins", "Attempts", "Jumps", "Level Time", "Points"};
-
     bool isPlatformer = m_popup->m_level->isPlatformer();
 
     for (int i = 0; i <= 7; i++) {
@@ -40,8 +29,9 @@ bool SortLayer::setup() {
         menu->addChild(toggle);
         m_toggles.push_back(toggle);
 
-        if (i == m_popup->m_sortType)
+        if (i == m_popup->m_sortType) {
             toggle->toggle(true);
+        }
 
         auto label = CCLabelBMFont::create(labels[i].c_str(), "bigFont.fnt");
         label->setPosition({xpos + 18.f, ypos});
@@ -63,8 +53,6 @@ bool SortLayer::setup() {
         }
     }
 
-    // menu->updateLayout();
-
     auto infoSprite = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
     infoSprite->setScale(0.75f);
     auto infoBtn = CCMenuItemSpriteExtra::create(infoSprite, this, menu_selector(SortLayer::onInfo));
@@ -79,7 +67,7 @@ SortLayer* SortLayer::create(RebeatPopup* popup) {
 
     ret->m_popup = popup;
 
-    if (ret->initAnchored(360, 260, "GJ_square05.png")) { //450, 245
+    if (ret->initAnchored(360, 260, "GJ_square05.png")) {
         ret->autorelease();
         return ret;
     }
@@ -92,7 +80,6 @@ void SortLayer::onToggle(CCObject* obj) {
     auto toggle = static_cast<CCMenuItemToggler*>(obj);
 
     if (toggle->isToggled()) {
-        log::debug("isToggled()");
         toggle->toggle(false);
         return;
     }
@@ -100,8 +87,9 @@ void SortLayer::onToggle(CCObject* obj) {
     int index = toggle->getTag();
 
     for (int i = 0; i < m_toggles.size(); i++) {
-        if (i != index)
+        if (i != index) {
             m_toggles[i]->toggle(false);
+        }
     }
 
     m_popup->m_sortType = index;
@@ -109,7 +97,6 @@ void SortLayer::onToggle(CCObject* obj) {
 }
 
 void SortLayer::onClose(CCObject* obj) {
-    log::debug("onClose");
     m_popup->refreshList();
     geode::Popup<>::onClose(obj);
 }

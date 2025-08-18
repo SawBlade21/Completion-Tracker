@@ -15,8 +15,6 @@
 using namespace geode::prelude;
 using namespace std::chrono;
 
-std::string buttonSpriteName = "rebeat_btn_02.png"_spr;
-
 class $modify(FapGJBaseGameLayer, GJBaseGameLayer) {
 
     struct Fields {
@@ -140,7 +138,6 @@ class $modify(FapPlayLayer, PlayLayer) {
 		
     }
 
-
 	static void onModify(auto& self) {
 		if (!self.setHookPriorityPre("PlayLayer::levelComplete", Priority::Last)) {
 			geode::log::warn("Failed to set Completion Tracker hook priority for PlayLayer::levelComplete().");
@@ -168,10 +165,7 @@ class $modify(FapPlayLayer, PlayLayer) {
 		
 		std::time_t now_time_t = system_clock::to_time_t(system_clock::now());
 		std::string timestamp = fmt::format("{:%Y-%m-%d %H:%M:%S}", *std::localtime(&now_time_t));
-		log::debug("timestamp: {}", timestamp);
 		auto splitTime = Utils::splitString(timestamp, ' ');
-
-		log::debug("(main.cpp) time: {}", splitTime[1]);
 		
 		if (m_level->m_normalPercent.value() != 100) {
 			timestamp = "f" + timestamp;
@@ -204,7 +198,6 @@ class $modify(FapPlayLayer, PlayLayer) {
 		}
 
 		newRebeat["coins"] = coins;
-
 		
 		if (m_isPlatformer) {
 			auto time = std::round(m_timePlayed * 1000.0) / 1000.0;
@@ -219,19 +212,20 @@ class $modify(FapPlayLayer, PlayLayer) {
 			int seconds = static_cast<int>(time);
 			int milliseconds = static_cast<int>((time - seconds) * 100);
 
-			if (hours > 0)
+			if (hours > 0) {
 				formattedTime = fmt::format("{:02}:{:02}:{:02}.{:03}", hours, minutes, seconds, milliseconds);
-			else if (minutes > 0)
+			}
+			else if (minutes > 0) {
 				formattedTime = fmt::format("{:02}:{:02}.{:03}", minutes, seconds, milliseconds);
-			else
+			}
+			else {
 				formattedTime = fmt::format("{}.{:03}", seconds, static_cast<int>((time - seconds) * 1000));
+			}
 
 			newRebeat["level_time"] = formattedTime;
 
-
 			std::string points = GameToolbox::pointsToString(m_gameState.m_points);
 			newRebeat["points"] = points;
-
 		}
 		else {
 			auto attempts = std::to_string(m_level->m_attempts.value());
@@ -262,7 +256,7 @@ class $modify(FapLevelInfoLayer, LevelInfoLayer) {
 		if (!LevelInfoLayer::init(level, challenge)) return false;
 	
 		auto rebeatButton = CCMenuItemSpriteExtra::create(
-			CCSprite::create(buttonSpriteName.c_str()),
+			CCSprite::create("rebeat_btn_02.png"_spr),
 			this,
 			menu_selector(FapLevelInfoLayer::onButton)
 		);
@@ -296,16 +290,23 @@ class $modify(FapEditLevelLayer, EditLevelLayer) {
 	bool init(GJGameLevel* level) {
 		if (!EditLevelLayer::init(level)) return false;
 
-		auto rebeatSprite = CCSprite::create(buttonSpriteName.c_str());
+		auto rebeatSprite = CCSprite::create("rebeat_btn_02.png"_spr);
+		// rebeatSprite->setScale(0.7f);
 
 		auto rebeatButton = CCMenuItemSpriteExtra::create(
-			CCSprite::create(buttonSpriteName.c_str()),
+			rebeatSprite,
 			this,
 			menu_selector(FapEditLevelLayer::onButton)
 		);
 		rebeatButton->setID("rebeatBtn"_spr);
 
-		if (!Loader::get()->isModLoaded("geode.node-ids")) {
+		if (Loader::get()->isModLoaded("geode.node-ids")) {
+			rebeatSprite->setScale(1.115f);
+			CCMenu* actionsMenu = static_cast<CCMenu*>(getChildByID("level-actions-menu"));
+			actionsMenu->addChild(rebeatButton);
+			actionsMenu->updateLayout();
+		}
+		else {
 			auto menu = CCMenu::create();
 			menu->setID("rebeatMenu"_spr);
 			addChild(menu);
@@ -313,12 +314,6 @@ class $modify(FapEditLevelLayer, EditLevelLayer) {
 
 			rebeatButton->setPosition({-254.5f, 60.f});
 			rebeatSprite->setScale(0.8f);
-		}
-		else {
-			rebeatSprite->setScale(1.3f);
-			CCMenu* actionsMenu = static_cast<CCMenu*>(getChildByID("level-actions-menu"));
-			actionsMenu->addChild(rebeatButton);
-			actionsMenu->updateLayout();
 		}
 	
 		return true;
@@ -335,7 +330,7 @@ class $modify(FapPauseLayer, PauseLayer) {
 	void customSetup() {
 		PauseLayer::customSetup();
 
-		auto rebeatSprite = CCSprite::create(buttonSpriteName.c_str());
+		auto rebeatSprite = CCSprite::create("rebeat_btn_02.png"_spr);
 		rebeatSprite->setScale(0.65f);
 	
 		auto rebeatButton = CCMenuItemSpriteExtra::create(
@@ -357,7 +352,6 @@ class $modify(FapPauseLayer, PauseLayer) {
 			menu->addChild(rebeatButton);
 			menu->updateLayout();
 		}
-	
 
 	}
 };
@@ -375,7 +369,7 @@ class $modify(FapEndLevelLayer, EndLevelLayer) {
 		if (!Mod::get()->getSettingValue<bool>("endscreen-button")) 
 			return;
 
-		auto rebeatSprite = CCSprite::create(buttonSpriteName.c_str());
+		auto rebeatSprite = CCSprite::create("rebeat_btn_02.png"_spr);
 		rebeatSprite->setScale(0.75f);
 	
 		auto rebeatButton = CCMenuItemSpriteExtra::create(
@@ -395,13 +389,4 @@ class $modify(FapEndLevelLayer, EndLevelLayer) {
 			rebeatButton->setPosition({135, 120});
 
 	}
-};
-
-$execute {
-    geode::listenForSettingChanges("blue-button", +[](bool value) {
-        if (value)
-			buttonSpriteName = "rebeat_btn_02b.png"_spr;
-		else
-			buttonSpriteName = "rebeat_btn_02.png"_spr;
-    });
 };
