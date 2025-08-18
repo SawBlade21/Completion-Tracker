@@ -20,8 +20,8 @@ Thanks to [Zilko](https://gdbrowser.com/u/zilko) for helping develop the mod!
 ---
 ## Previews
 
-<img src="resources/thumb1.png" width="1280" alt="Preview #1" />
+<img src="resources/thumb1.png" width="300" alt="Preview #1" />
 
-<img src="resources/thumb2.png" width="1280" alt="Preview #2" />
+<img src="resources/thumb2.png" width="300" alt="Preview #2" />
 
-<img src="resources/thumb3.png" width="1280" alt="Preview #3" />
+<img src="resources/thumb3.png" width="300" alt="Preview #3" />
