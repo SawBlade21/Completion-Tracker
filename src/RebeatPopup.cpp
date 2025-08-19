@@ -44,13 +44,17 @@ void RebeatPopup::makeList(bool refresh) {
 
     topBorder->setScale(1.118f);
     bottomBorder->setScale(1.118f);
+    
+    m_scrollbar = Scrollbar::create(m_listView->m_tableView);
+    m_scrollbar->setPosition(m_list->getPosition() + ccp(m_list->getContentSize().width + 6, 0));
+    m_scrollbar->setAnchorPoint({0, 0});
+    m_mainLayer->addChild(m_scrollbar, 3);
 
-    if (contentLayer->getContentSize().height >= 175) {
-        m_scrollbar = Scrollbar::create(m_listView->m_tableView);
-        m_scrollbar->setPosition(m_list->getPosition() + ccp(m_list->getContentSize().width + 6, 0));
-        m_scrollbar->setAnchorPoint({0, 0});
-        m_mainLayer->addChild(m_scrollbar, 3);
+    if (contentLayer->getContentSize().height < 175) {
+        m_scrollbar->setVisible(false);
     }
+    
+    m_scrollbar->setContentSize({8, 220});
 
     if (refresh) {
         m_rebeatCount->setString(fmt::format("Total Completions: {}", m_rebeats).c_str(), "bigFont.fnt");

@@ -24,13 +24,6 @@
 			"importance": "required"
 		}
 	},
-	"incompatibilities": 
-	{
-		"user95401.scrollbar_everywhere": {
-			"version": ">=1.0.0",
-			"importance": "conflicting"
-		}
-	},
 	"resources": {
         "sprites": [
             "resources/jumps.png",
