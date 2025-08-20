@@ -3,13 +3,13 @@ by [Sawblade](https://gdbrowser.com/u/sawbladegd)
 
 ---
 Tracks every time you complete an online or created level!
-Completions can be edited using the completion editor.
+Completions can be created and edited using the completion editor.
 
 The following stats are saved for each completion:
 * Name, Date, Time, Coins, and Icon
 * Jumps and Attempts on <cj>Classic</c> levels
 * Level Time and Points on <cp>Platformer</c> levels
-* YouTube video link
+* <cr>YouTube</c> video link
 
 ---
 # Mod Options

@@ -22,7 +22,9 @@ void RebeatPopup::makeList(bool refresh) {
         }
     }
 
-    sortCells();
+    if (m_cells->count() > 0) {
+        sortCells();
+    }
 
     m_listView = ListView::create(m_cells, 44, 380, 220);
     CCNode* contentLayer = static_cast<CCNode*>(m_listView->m_tableView->getChildren()->objectAtIndex(0));

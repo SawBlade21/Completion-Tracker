@@ -1090,7 +1090,7 @@ void EditPopup::onInfo(CCObject* obj) {
     FLAlertLayer::create(
         nullptr,
         fmt::format("{} Completion Info", (m_isCreate) ? "Create" : "Edit").c_str(),
-        "This is where you can set the completion's information.\nThe <cg>Reset</c> buttons reset the field to its original value.\nThe <co>Auto</c> buttons autofill the value. Enable the Autocomplete option in the <cy>Mod Settings</c> to automatically apply this to all fields. All fields left empty will be autofilled.",
+        "This is where you can edit the completion's information.\nThe <cg>Reset</c> buttons reset the field to its original value.\nThe <co>Auto</c> buttons autofill the field with current level stats. Enable the <co>Autofill</c> option in the <cy>Mod Settings</c> to automatically apply this to all fields when opening the completion editor.\nAll fields left empty will be autofilled.",
         "OK",
         nullptr,
         380
@@ -1108,25 +1108,28 @@ void EditPopup::onInfoInfo(CCObject* obj) {
 void EditPopup::onIconInfo(CCObject* obj) {
     FLAlertLayer::create(
         "Icon Help",
-        "Sets the icon displayed in the completion.\nThe <cy>Paste</c> button sets the icons to your current icon set.",
+        "Sets the icon displayed in the completion.\nThe <cj>Garage</c> button (center) opens the icon select menu.\nThe <cy>Paste</c> button (right) sets the icons to your current icon set.",
         "OK"
     )->show();
 }
 
 void EditPopup::onStatsInfo(CCObject* obj) {
-    std::string text = "<cj>Coins</c>: Toggle the coins to set which have been collected.";
+    std::string text = "<cj>Coins</c>: Toggle which coins have been collected.";
 
     if (m_isPlatformer) {
-        text += "\n<co>Level Time</c>: The amount of in-game time taken to complete the level, as shown on the endscreen.\n<cg>Points</c>: The amount of Points collected in the level. Leave blank if the level does not contain points.";
+        text += "\n<co>Level Time</c>: The amount of in-game time taken to complete the level, as shown on the endscreen.\n<cg>Points</c>: The amount of Points collected in the level. This can be left blank if the level does not contain points.";
     }
     else {
-        text += "\n<co>Attempts</c>: The total amount of attempts the completion took.\n<cg>Jumps</c>: The number of jumps during the completion session, as shown on the endscreen.";
+        text += "\n<co>Attempts</c>: The total amount of attempts upon completion (not the attempts count per session, as shown on the endscreen).\n<cg>Jumps</c>: The number of jumps during the completion session, as shown on the endscreen.";
     }
 
     FLAlertLayer::create(
+        nullptr,
         "Stats Help",
         text,
-        "OK"
+        "OK",
+        nullptr,
+        380
     )->show();
 }
 
