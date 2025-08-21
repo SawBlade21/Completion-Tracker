@@ -72,12 +72,12 @@ void RebeatPopup::makeList(bool refresh) {
 
 void RebeatPopup::onSettings(CCObject* obj) {
     auto settings = geode::openSettingsPopup(Mod::get(), false);
-    settings->setID("completionSettings"_spr);
+    settings->setID("completion-settings"_spr);
 }
 
 bool RebeatPopup::setup() {
     setTitle(fmt::format("Completions for {}", m_level->m_levelName));
-    setID("CompletionLayer"_spr);
+    setID("completion-layer"_spr);
     auto titleWidth = m_title->getContentSize().width;
     m_title->limitLabelWidth(335.f, 0.8f, 0.001f);
     m_title->setPositionY(273.f);

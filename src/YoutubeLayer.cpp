@@ -2,7 +2,7 @@
 #include "EditPopup.hpp"
 
 bool YoutubeLayer::setup() {
-    setID("YoutubeLayer"_spr);
+    setID("youtube-layer"_spr);
     setTitle("Set Youtube Video");
 
     auto menu = CCMenu::create();

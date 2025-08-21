@@ -259,11 +259,11 @@ class $modify(FapLevelInfoLayer, LevelInfoLayer) {
 			this,
 			menu_selector(FapLevelInfoLayer::onButton)
 		);
-		rebeatButton->setID("rebeatBtn"_spr);
+		rebeatButton->setID("rebeat-btn"_spr);
 
 		if (!Loader::get()->isModLoaded("geode.node-ids")) {
 			auto menu = CCMenu::create();
-			menu->setID("rebeatMenu"_spr);
+			menu->setID("rebeat-menu"_spr);
 			addChild(menu);
 			menu->addChild(rebeatButton);
 
@@ -297,7 +297,7 @@ class $modify(FapEditLevelLayer, EditLevelLayer) {
 			this,
 			menu_selector(FapEditLevelLayer::onButton)
 		);
-		rebeatButton->setID("rebeatBtn"_spr);
+		rebeatButton->setID("rebeat-btn"_spr);
 
 		if (Loader::get()->isModLoaded("geode.node-ids")) {
 			rebeatSprite->setScale(1.115f);
@@ -307,7 +307,7 @@ class $modify(FapEditLevelLayer, EditLevelLayer) {
 		}
 		else {
 			auto menu = CCMenu::create();
-			menu->setID("rebeatMenu"_spr);
+			menu->setID("rebeat-menu"_spr);
 			addChild(menu);
 			menu->addChild(rebeatButton);
 
@@ -337,11 +337,11 @@ class $modify(FapPauseLayer, PauseLayer) {
 			this,
 			menu_selector(FapPauseLayer::onButton)
 		);
-		rebeatButton->setID("rebeatBtn"_spr);
+		rebeatButton->setID("rebeat-btn"_spr);
 
 		if (!Loader::get()->isModLoaded("geode.node-ids")) {
             CCMenu* menu = CCMenu::create();
-            menu->setID("rebeatBtn"_spr);
+            menu->setID("rebeat-btn"_spr);
             addChild(menu);
             rebeatButton->setPosition({248, -122});
             menu->addChild(rebeatButton);
@@ -377,7 +377,7 @@ class $modify(FapEndLevelLayer, EndLevelLayer) {
 			menu_selector(FapEndLevelLayer::onButton)
 		);
 
-		rebeatButton->setID("rebeatBtn"_spr);
+		rebeatButton->setID("rebeat-btn"_spr);
 		auto btnMenu = m_mainLayer->getChildByID("button-menu");
 		btnMenu->addChild(rebeatButton);
 		auto level = PlayLayer::get()->m_level;

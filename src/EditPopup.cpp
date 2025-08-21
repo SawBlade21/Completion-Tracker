@@ -11,7 +11,7 @@ using namespace geode::prelude;
 using namespace std::chrono;
 
 bool EditPopup::setup() {
-    setID("EditLayer"_spr);
+    setID("edit-layer"_spr);
 
     if (m_isCreate) {
         setTitle("Create Completion");
@@ -29,7 +29,7 @@ bool EditPopup::setup() {
     leftBg->setPosition({78, 150});
     leftBg->setColor({ 0,0,0});
     leftBg->setOpacity(75);
-    leftBg->setID("leftBg"_spr);
+    leftBg->setID("left-bg"_spr);
     m_mainLayer->addChild(leftBg);
 
     auto centerBg = CCScale9Sprite::create("square02b_001.png");
@@ -37,7 +37,7 @@ bool EditPopup::setup() {
     centerBg->setPosition({220, 150});
     centerBg->setColor({ 0,0,0});
     centerBg->setOpacity(75);
-    centerBg->setID("centerBg"_spr);
+    centerBg->setID("center-bg"_spr);
     m_mainLayer->addChild(centerBg);
 
     auto rightBg = CCScale9Sprite::create("square02b_001.png");
@@ -45,7 +45,7 @@ bool EditPopup::setup() {
     rightBg->setPosition({362, 150});
     rightBg->setColor({ 0,0,0});
     rightBg->setOpacity(75);
-    rightBg->setID("rightBg"_spr);
+    rightBg->setID("right-bg"_spr);
     m_mainLayer->addChild(rightBg);
 
 
