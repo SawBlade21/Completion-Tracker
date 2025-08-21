@@ -2,6 +2,7 @@
 #include "RebeatPopup.hpp"
 
 bool SortLayer::setup() {
+    setID("SortLayer"_spr);
     setTitle("Sort Completions");
 
     auto menu = CCMenu::create();

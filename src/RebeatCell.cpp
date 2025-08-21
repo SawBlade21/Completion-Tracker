@@ -169,7 +169,7 @@ bool RebeatCell::init() {
             }
 
             if (m_popup->m_id[0] != 'c') {
-                int levelID = stoi(m_popup->m_id);
+                int levelID = numFromString<int>(m_popup->m_id).unwrapOr(0);
                 m_popup->m_isRobtopLevel = (levelID <= 24 || (levelID > 5000 && levelID < 5005) || levelID == 3001);
             }
 

@@ -45,7 +45,7 @@ std::string Utils::getTime(std::string time) {
 
         ss >> std::get_time(&tm, "%H:%M:%S");
         if (ss.fail()) {
-            return time;
+            return time + " AM";
         }
         else {
             std::ostringstream out;
@@ -60,7 +60,7 @@ std::string Utils::getTime(std::string time) {
         ss >> std::get_time(&tm, "%I:%M:%S %p");
 
         if (ss.fail()) {
-            return time;
+            return time.erase(time.length() - 3);
         }
         else {
             std::ostringstream out;

@@ -4,6 +4,7 @@
 using namespace geode::prelude;
 
 bool IconSelectLayer::setup() {
+    setID("IconSelectLayer"_spr);
     setTitle("Select Icon");
     gm = GameManager::get();
     m_iconCount = gm->countForType(m_gamemode);

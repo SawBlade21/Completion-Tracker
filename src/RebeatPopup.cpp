@@ -77,6 +77,7 @@ void RebeatPopup::onSettings(CCObject* obj) {
 
 bool RebeatPopup::setup() {
     setTitle(fmt::format("Completions for {}", m_level->m_levelName));
+    setID("CompletionLayer"_spr);
     auto titleWidth = m_title->getContentSize().width;
     m_title->limitLabelWidth(335.f, 0.8f, 0.001f);
     m_title->setPositionY(273.f);
@@ -135,7 +136,7 @@ bool RebeatPopup::setup() {
         m_isRobtopLevel = false;
     }
     else {
-        int levelID = std::stoi(m_id);
+        int levelID = numFromString<int>(m_id).unwrapOr(0);
         m_isRobtopLevel = (levelID <= 24 || (levelID > 5000 && levelID < 5005) || levelID == 3001);
     }
 
@@ -174,16 +175,16 @@ int getRawTime(std::string formattedTime) {
     int milliseconds = 0;
 
     if (splitTime.size() > 0) {
-        milliseconds = stoi(splitTime[0]);
+        milliseconds = numFromString<int>(splitTime[0]).unwrapOr(0);
 
         if (splitTime.size() > 1) {
-            seconds = stoi(splitTime[1]) * 1000;
+            seconds = numFromString<int>(splitTime[1]).unwrapOr(0) * 1000;
 
             if (splitTime.size() > 2) {
-                minutes = stoi(splitTime[2]) * 60 * 1000;
+                minutes = numFromString<int>(splitTime[2]).unwrapOr(0) * 60 * 1000;
 
                 if (splitTime.size() > 3) {
-                    hours = stoi(splitTime[3]) * 60 * 60 * 1000;
+                    hours = numFromString<int>(splitTime[3]).unwrapOr(0) * 60 * 60 * 1000;
                 }
             }
         }   

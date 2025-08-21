@@ -43,6 +43,7 @@ void ColorSelectLayer::createButton(int color, const cocos2d::CCPoint& pos) {
 }
 
 bool ColorSelectLayer::setup() {
+    setID("SelectColorLayer"_spr);
     setTitle("Select Color");
 
     createButton(51, ccp(17, 217));

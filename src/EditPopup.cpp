@@ -11,6 +11,8 @@ using namespace geode::prelude;
 using namespace std::chrono;
 
 bool EditPopup::setup() {
+    setID("EditLayer"_spr);
+
     if (m_isCreate) {
         setTitle("Create Completion");
     }
@@ -59,7 +61,6 @@ bool EditPopup::setup() {
     auto ytSprite = CCSprite::createWithSpriteFrameName("gj_ytIcon_001.png");
     ytSprite->setScale(0.75f);
     auto ytBtn = CCMenuItemSpriteExtra::create(ytSprite, this, menu_selector(EditPopup::onYoutube));
-    log::debug("width: {}, {}", m_title->getContentWidth(), m_title->getContentWidth() / 2.f);
     float titleEdge = m_title->getPosition().x + m_title->getContentSize().width * m_title->getScale() / 2.f;
     ytBtn->setPosition({titleEdge + 18.f, 270.f});
     popupMenu->addChild(ytBtn);
@@ -332,7 +333,7 @@ bool EditPopup::setup() {
     m_hourInput->setScale(0.65f);
     m_hourInput->setPosition(38, 80);
     m_hourInput->setCommonFilter(CommonFilter::Uint);
-    m_hourInput->setMaxCharCount(4);
+    m_hourInput->setMaxCharCount(2);
     m_mainLayer->addChild(m_hourInput);
 
     m_minuteInput = TextInput::create(50.f, "mm", "bigFont.fnt");
@@ -385,14 +386,17 @@ bool EditPopup::setup() {
         if (m_cell->m_time != "") {
             auto splitTimes = Utils::splitString(Utils::getTime(m_cell->m_time), ':');
 
-            if (m_timeSettingText) {
-                m_cellTimes[3] = Utils::isAMorPM(splitTimes[splitTimes.size() - 1]);
-                splitTimes[splitTimes.size() - 1].erase(splitTimes[splitTimes.size() - 1].size() - 3);
+            if (splitTimes.size() > 0) {
+                if (m_timeSettingText) {
+                    m_cellTimes[3] = Utils::isAMorPM(splitTimes[splitTimes.size() - 1]);
+                    splitTimes[splitTimes.size() - 1].erase(splitTimes[splitTimes.size() - 1].size() - 3);
+                }
+                
+                for (int i = 0; i < splitTimes.size(); i++) {
+                    m_cellTimes[i + (3 - splitTimes.size())] = splitTimes[i];
+                }
             }
-            
-            for (int i = 0; i < splitTimes.size(); i++) {
-                m_cellTimes[i + (3 - splitTimes.size())] = splitTimes[i];
-            }
+
         }
 
         onResetDate(nullptr);
@@ -915,7 +919,6 @@ void EditPopup::onResetName(CCObject* obj) {
 }
 
 void EditPopup::onResetDate(CCObject* obj) {
-    log::debug("resetDate");
     if (m_isCreate) {
         m_yearInput->setString("");
         m_monthInput->setString("");
@@ -1165,26 +1168,33 @@ void EditPopup::onSave(CCObject* obj) {
     std::string day = (m_dayInput->getString() != "") ? m_dayInput->getString() : "??";
     std::string date = fmt::format("{}-{}-{}", year, month, day);
 
-    std::string hour = (m_hourInput->getString() != "") ? m_hourInput->getString() : "00";
+    std::string blankTime = "00";
+
+    std::string hour = (m_hourInput->getString() != "") ? m_hourInput->getString() : blankTime;
     if (hour.length() < 2) {
         hour = "0" + hour;
     }
 
-    std::string minute = (m_minuteInput->getString() != "") ? m_minuteInput->getString() : "00";
+    std::string minute = (m_minuteInput->getString() != "") ? m_minuteInput->getString() : blankTime;
     if (minute.length() < 2) {
         minute = "0" + minute;
     }
 
-    std::string second = (m_secondInput->getString() != "") ? m_secondInput->getString() : "00";
+    std::string second = (m_secondInput->getString() != "") ? m_secondInput->getString() : blankTime;
     if (second.length() < 2) {
         second = "0" + second;
     }
 
+    if (numFromString<int>(minute).unwrapOr(99) > 60) minute = blankTime;
+    if (numFromString<int>(second).unwrapOr(99) > 60) second = blankTime;
+
     std::string time;
     if (m_timeSettingText) {
+        if (numFromString<int>(hour).unwrapOr(99) > 12) hour = blankTime;
         time = fmt::format("{}:{}:{} {}", hour, minute, second, m_timeSettingText->getString());
     }
     else {
+        if (numFromString<int>(hour).unwrapOr(99) > 24) hour = blankTime;
         time = fmt::format("{}:{}:{}", hour, minute, second);
     }
 
